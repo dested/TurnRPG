@@ -1,0 +1,40 @@
+{
+  "name": "TurnRPGProject",
+  "version": "0.0.1",
+  "description": "Turn RPG",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "canvas-win": "~0.1.7",
+    "gulp": "~3.5.2",
+    "gulp-concat": "~2.1.7",
+    "gulp-uglify": "~0.2.1",
+    "gulp-util": "~2.2.14",
+    "gulp.spritesmith": "~0.1.1",
+    "gulp-clean": "~0.2.4",
+    "gulp-insert": "~0.2.0",
+    "through2": "~0.4.1",
+    "run-sequence": "~0.3.6",
+    "express": "~3.4.8",
+    "gulp-imagemin": "~0.1.5",
+    "uglify-js": "~2.4.12"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dested/TurnRPG"
+  },
+  "keywords": [
+
+  ],
+  "author": "Dested",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dested/TurnRPG/issues"
+  },
+  "homepage": "https://github.com/dested/TurnRPG",
+  "devDependencies": {
+    "gulp-tinypng": "~1.0.2"
+  }
+}
