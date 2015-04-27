@@ -12,6 +12,7 @@
 *_i.c
 *_p.c
 *.ncb
+*.suo
 *.tlb
 *.tlh
 *.bak
@@ -21,11 +22,10 @@
 *.lib
 *.sbr
 *.sdf
-*.suo
 ipch/
 obj/
 [Bb]in
-[Dd]ebug/
+[Dd]ebug*/
 [Rr]elease*/
 Ankh.NoLoad
 
@@ -43,10 +43,5 @@ _ReSharper*/
 # Office Temp Files
 ~$*
 
-.idea/
-
-node_modules/
-passwords.js
-
-.ntvs_analysis.dat.tmp
-.ntvs_analysis.dat
+node_modules
+/gulp/node_modules

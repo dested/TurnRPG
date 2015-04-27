@@ -1,0 +1,10 @@
+<div ng-controller="LevelSelectorController">
+    <div floating-window left="'85%'" top="'50%'" width="'300px'" height="'300px'" window-title="'Level Selector'" onclose="callback.windowClosed()" visible="visible">
+        <h4>{{model.loadingStatus}}</h4>
+
+        <div style="height: 250px;" class="full-width" fancy-list items="model.levels" bind="model.selectedLevel">
+            {{item.name}}
+        </div>
+
+    </div>
+</div>
