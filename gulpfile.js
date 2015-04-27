@@ -24,6 +24,7 @@ gulp.task('client', function (callback) {
             'client.packageHtml',
             'client.packageCss'
         ],
+        'client.watch',
         'client.express',
         callback);
 });

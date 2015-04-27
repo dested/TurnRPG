@@ -7,7 +7,6 @@ define(
         'common.walkway.gameBoard',
         'client.walkway.gameModel',
 
-
         'client.walkway.planes.overlaysPlane'
     ],
     function (assetLoader, canvasUtils, ClickManager, //
@@ -37,7 +36,7 @@ define(
 
 
         ClientGameBoard.prototype.render = function () {
-
+            this.overlaysPlane.plane.canvas.width=this.overlaysPlane.plane.canvas.width;
             this.overlaysPlane.render();
         };
 

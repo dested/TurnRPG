@@ -7,9 +7,7 @@ define(
 
 
         function GameBoard(boardWidth, boardHeight) {
-
             this.gameModel = new GameModel(boardWidth, boardHeight);
-
         }
 
         GameBoard.prototype.init = function () {

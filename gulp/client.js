@@ -8,6 +8,7 @@ var tingpng = require('gulp-tinypng');
 var clean = require('gulp-clean');
 var insert = require('gulp-insert');
 var spritesmith = require('gulp.spritesmith');
+var watch = require('gulp-watch');
 
 
 //var packageImages = require('./gulpPlugins/packageImages');
@@ -96,6 +97,9 @@ gulp.task('client.express', function () {
     http.createServer(app).listen(app.get('port'), function () {
         console.log('Express server listening on port ' + app.get('port'));
     });
+});
+gulp.task('client.watch', function () {
+    gulp.watch(codePaths, ['client.packageScripts']);
 });
 
 

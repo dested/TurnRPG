@@ -13,11 +13,11 @@ define(
         function startGame() {
             document.getElementById('loading').parentNode.removeChild(document.getElementById('loading'));
 
-            var boardWidth = 430;
-            var boardHeight = 557;//todo: to object
+            var boardWidth = 1280;
+            var boardHeight = 960;//todo: to object
 
             var gameBoard = new GameBoard(boardWidth, boardHeight * 2, boardWidth, boardHeight);
-             gameBoard.init();
+            gameBoard.init();
 
             setInterval(function () {
                 gameBoard.tick();
