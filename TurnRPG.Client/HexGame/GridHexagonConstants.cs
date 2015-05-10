@@ -9,7 +9,7 @@ namespace TurnRPG.Client.HexGame
     {
         static GridHexagonConstants()
         {
-            Width = 100;
+            Width = 131;
             HeightSkew = .55;
             DepthHeightSkew = .40;
             /*

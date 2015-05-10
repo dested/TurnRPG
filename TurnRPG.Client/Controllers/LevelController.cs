@@ -15,7 +15,7 @@ namespace TurnRPG.Client.Controllers
         public CanvasElement Canvas;
 
 
-        private HexBoard hexBoard;
+        public static HexBoard HexBoard;
 
         public LevelController(LevelScope scope)
         {
@@ -23,7 +23,7 @@ namespace TurnRPG.Client.Controllers
             this.scope.Model = new LevelScopeModel();
             this.scope.Callback = new LevelScopeCallback();
 
-            hexBoard = new HexBoard();
+            HexBoard = new HexBoard();
 
             Init();
             
@@ -34,7 +34,7 @@ namespace TurnRPG.Client.Controllers
         private void Draw()
         {
             Canvas.Width = Canvas.Width;
-            hexBoard.DrawBoard(Context);
+            HexBoard.DrawBoard(Context);
         }
 
 
@@ -50,9 +50,9 @@ namespace TurnRPG.Client.Controllers
             {
                 var x = (int)((dynamic)e).offsetX;
                 var y = (int)((dynamic)e).offsetY;
-                hexBoard.ClickBoard(x, y);
+                HexBoard.ClickBoard(x, y);
             };
-            hexBoard.Init();
+            HexBoard.Init();
 
         }
 

@@ -25,28 +25,26 @@ namespace TurnRPG.Client.Controllers
             this.scope.Model.Width = GridHexagonConstants.Width;
             this.scope.Model.DepthHeightSkew = GridHexagonConstants.DepthHeightSkew;
             this.scope.Model.HeightSkew = GridHexagonConstants.HeightSkew;
-            this.scope.Watch("model.width", () =>
-            {
-                GridHexagonConstants.Width = this.scope.Model.Width;
-            });
-
-            this.scope.Watch("model.depthHeightSkew", () =>
-            {
-                GridHexagonConstants.DepthHeightSkew = this.scope.Model.DepthHeightSkew;
-            });
-
-            this.scope.Watch("model.heightSkew", () =>
-            {
-                GridHexagonConstants.HeightSkew = this.scope.Model.HeightSkew;
-            });
-
-
+         
+            this.scope.Watch("model.width", updateConstants);
+            this.scope.Watch("model.depthHeightSkew", updateConstants);
+            this.scope.Watch("model.heightSkew", updateConstants);
         }
-        /*
-                private void loadLevelFn(LevelModel arg)
-                {
-                }
-                 */
+
+        private void updateConstants()
+        {
+
+            GridHexagonConstants.Width = this.scope.Model.Width;
+            GridHexagonConstants.DepthHeightSkew = this.scope.Model.DepthHeightSkew;
+            GridHexagonConstants.HeightSkew = this.scope.Model.HeightSkew;
+
+
+            foreach (var gridHexagon in LevelController.HexBoard.HexList)
+            {
+                gridHexagon.Hexagon.BuildPaths();
+            }
+
+        } 
 
     }
 }

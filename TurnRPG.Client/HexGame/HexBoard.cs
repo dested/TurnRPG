@@ -13,10 +13,10 @@ namespace TurnRPG.Client.HexGame
         public void Init()
         {
 
-            grid = new Hexagon[40, 40];
-            for (var y = 0; y < 40; y++)
+            grid = new Hexagon[20, 20];
+            for (var y = 0; y < grid.GetLength(0); y++)
             {
-                for (var x = 0; x < 40; x++)
+                for (var x = 0; x < grid.GetLength(1); x++)
                 {
 
                     var hex = new Hexagon()
