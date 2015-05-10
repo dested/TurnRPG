@@ -36,6 +36,7 @@ namespace TurnRPG.Client
             var module = angular.Module("TurnRPG", new string[] {"ui.utils", "ui.bootstrap"})
                 .Config(new object[] {"$httpProvider", new Action<dynamic>(buildHttpProvider)})
                 .Controller(LevelController.Name, new object[] { ScopeName, new Func<LevelScope, object>((scope) => new LevelController(scope)) })
+                .Controller(HexEditorController.Name, new object[] { ScopeName, new Func<HexEditorScope, object>((scope) => new HexEditorController(scope)) })
                 .Service(CreateUIService.Name, new object[] { CompileName, RootScopeName, new Func<CompileService, IRootScopeService, object>((compileService, rootScopeService) => new CreateUIService(compileService, rootScopeService)) })
                 .Directive(FancyListDirective.Name, new object[] { new Func<object>(() => new FancyListDirective()) })
                 .Directive(FancyListIndexDirective.Name, new object[] {new Func<object>(() => new FancyListIndexDirective())})
@@ -53,6 +54,7 @@ namespace TurnRPG.Client
                                                                         {
                                                                             buildCache(http, templateCache);
                                                                             createUIService.Create(LevelController.View);
+                                                                            createUIService.Create(HexEditorController.View);
                                                                         })
                      });
 
@@ -66,6 +68,8 @@ namespace TurnRPG.Client
         {
             string[] uis =
             {
+                "Level",
+                "HexEditor"
             };
             for (int index = 0; index < uis.Length; index++)
             {

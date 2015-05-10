@@ -6,6 +6,7 @@
 	global.TurnRPG.Client.Controllers = global.TurnRPG.Client.Controllers || {};
 	global.TurnRPG.Client.Directives = global.TurnRPG.Client.Directives || {};
 	global.TurnRPG.Client.Filters = global.TurnRPG.Client.Filters || {};
+	global.TurnRPG.Client.HexGame = global.TurnRPG.Client.HexGame || {};
 	global.TurnRPG.Client.Scope = global.TurnRPG.Client.Scope || {};
 	global.TurnRPG.Client.Scope.Controller = global.TurnRPG.Client.Scope.Controller || {};
 	global.TurnRPG.Client.Scope.Directive = global.TurnRPG.Client.Scope.Directive || {};
@@ -13,35 +14,6 @@
 	global.TurnRPG.Client.Services = global.TurnRPG.Client.Services || {};
 	global.TurnRPG.Client.Utils = global.TurnRPG.Client.Utils || {};
 	ss.initAssembly($asm, 'TurnRPG.Client');
-	////////////////////////////////////////////////////////////////////////////////
-	// LevelModel
-	var $LevelModel = function() {
-	};
-	$LevelModel.__typeName = 'LevelModel';
-	$LevelModel.createInstance = function() {
-		return $LevelModel.$ctor();
-	};
-	$LevelModel.$ctor = function() {
-		var $this = {};
-		return $this;
-	};
-	global.LevelModel = $LevelModel;
-	////////////////////////////////////////////////////////////////////////////////
-	// TurnRPG.Client.Controllers.LevelController.GridHexagon
-	var $TurnRPG_$Client_Controllers_$LevelController$GridHexagon = function() {
-		this.$x = 0;
-		this.$y = 0;
-		this.$hexagon = null;
-	};
-	$TurnRPG_$Client_Controllers_$LevelController$GridHexagon.__typeName = 'TurnRPG.$Client.Controllers.$LevelController$GridHexagon';
-	////////////////////////////////////////////////////////////////////////////////
-	// TurnRPG.Client.Controllers.LevelController.Hexagon
-	var $TurnRPG_$Client_Controllers_$LevelController$Hexagon = function() {
-		this.$color = null;
-		this.$enabled = false;
-		this.$height = 0;
-	};
-	$TurnRPG_$Client_Controllers_$LevelController$Hexagon.__typeName = 'TurnRPG.$Client.Controllers.$LevelController$Hexagon';
 	////////////////////////////////////////////////////////////////////////////////
 	// TurnRPG.Client.BuildAngular
 	var $TurnRPG_Client_BuildAngular = function() {
@@ -52,6 +24,8 @@
 		document.body.appendChild(stats.element);
 		var module = angular.module('TurnRPG', ['ui.utils', 'ui.bootstrap']).config(['$httpProvider', $TurnRPG_Client_BuildAngular.$buildHttpProvider]).controller($TurnRPG_Client_Controllers_$LevelController.$name, [$TurnRPG_Client_BuildAngular.$scopeName, function(scope) {
 			return new $TurnRPG_Client_Controllers_$LevelController(scope);
+		}]).controller($TurnRPG_Client_Controllers_$HexEditorController.$name, [$TurnRPG_Client_BuildAngular.$scopeName, function(scope1) {
+			return new $TurnRPG_Client_Controllers_$HexEditorController(scope1);
 		}]).service($TurnRPG_Client_Services_CreateUIService.name$1, [$TurnRPG_Client_BuildAngular.$compileName, $TurnRPG_Client_BuildAngular.$rootScopeName, function(compileService, rootScopeService) {
 			return new $TurnRPG_Client_Services_CreateUIService(compileService, rootScopeService);
 		}]).directive($TurnRPG_Client_Directives_FancyListDirective.name$1, [function() {
@@ -77,12 +51,13 @@
 		}]).run([$TurnRPG_Client_BuildAngular.$http, $TurnRPG_Client_BuildAngular.$templateCache, $TurnRPG_Client_Services_CreateUIService.name$1, function(http, templateCache, createUIService) {
 			$TurnRPG_Client_BuildAngular.$buildCache(http, templateCache);
 			createUIService.create($TurnRPG_Client_Controllers_$LevelController.$view);
+			createUIService.create($TurnRPG_Client_Controllers_$HexEditorController.$view);
 		}]);
 		//            MinimizeController.Register(module);
 		angular.bootstrap(window.document, ['TurnRPG']);
 	};
 	$TurnRPG_Client_BuildAngular.$buildCache = function(http, templateCache) {
-		var uis = [];
+		var uis = ['Level', 'HexEditor'];
 		for (var index = 0; index < uis.length; index++) {
 			var ui = { $: ss.formatString('{1}partials/UIs/{0}.html', uis[index], $TurnRPG_Client_Utils_Constants.contentAddress) };
 			http.get(ui.$, null).success(ss.mkdel({ ui: ui }, function(a) {
@@ -96,410 +71,51 @@
 	};
 	global.TurnRPG.Client.BuildAngular = $TurnRPG_Client_BuildAngular;
 	////////////////////////////////////////////////////////////////////////////////
+	// TurnRPG.Client.Controllers.HexEditorController
+	var $TurnRPG_Client_Controllers_$HexEditorController = function(scope) {
+		this.$scope = null;
+		this.$scope = scope;
+		this.$scope.visible = true;
+		this.$scope.model = $TurnRPG_Client_Scope_Controller_HexEditorScopeModel.$ctor();
+		this.$scope.callback = $TurnRPG_Client_Scope_Controller_HexEditorScopeCallback.$ctor();
+		this.$scope.callback.windowClosed = function() {
+		};
+		//            this.scope.Callback.LoadLevel += loadLevelFn;
+		this.$scope.model.width = $TurnRPG_Client_HexGame_GridHexagonConstants.width;
+		this.$scope.model.depthHeightSkew = $TurnRPG_Client_HexGame_GridHexagonConstants.depthHeightSkew;
+		this.$scope.model.heightSkew = $TurnRPG_Client_HexGame_GridHexagonConstants.heightSkew;
+		this.$scope.$watch('model.width', ss.mkdel(this, function() {
+			$TurnRPG_Client_HexGame_GridHexagonConstants.width = this.$scope.model.width;
+		}));
+		this.$scope.$watch('model.depthHeightSkew', ss.mkdel(this, function() {
+			$TurnRPG_Client_HexGame_GridHexagonConstants.depthHeightSkew = this.$scope.model.depthHeightSkew;
+		}));
+		this.$scope.$watch('model.heightSkew', ss.mkdel(this, function() {
+			$TurnRPG_Client_HexGame_GridHexagonConstants.heightSkew = this.$scope.model.heightSkew;
+		}));
+	};
+	$TurnRPG_Client_Controllers_$HexEditorController.__typeName = 'TurnRPG.Client.Controllers.$HexEditorController';
+	////////////////////////////////////////////////////////////////////////////////
 	// TurnRPG.Client.Controllers.LevelController
 	var $TurnRPG_Client_Controllers_$LevelController = function(scope) {
 		this.$scope = null;
 		this.$context = null;
 		this.$canvas = null;
-		this.$width = 0;
-		this.$height = 0;
-		this.$blockHeight = 0;
-		this.$grid = null;
-		this.$image = null;
+		this.$hexBoard = null;
 		this.$scope = scope;
 		this.$scope.model = $TurnRPG_Client_Scope_Controller_LevelScopeModel.$ctor();
 		this.$scope.callback = $TurnRPG_Client_Scope_Controller_LevelScopeCallback.$ctor();
-		this.$width = 260;
-		this.$height = Math.sqrt(3) / 2 * this.$width * 0.55;
-		this.$blockHeight = this.$height / 3;
+		this.$hexBoard = new $TurnRPG_Client_HexGame_HexBoard();
 		this.$init();
-		window.setInterval(ss.mkdel(this, this.$drawBoard), 16);
+		window.setInterval(ss.mkdel(this, this.$draw), 16);
 	};
 	$TurnRPG_Client_Controllers_$LevelController.__typeName = 'TurnRPG.Client.Controllers.$LevelController';
-	$TurnRPG_Client_Controllers_$LevelController.$transformHeight = function(y, height) {
-		return height;
-	};
-	$TurnRPG_Client_Controllers_$LevelController.$drawCircle = function(context) {
-		context.beginPath();
-		context.arc(0, 0, 5, 0, 2 * Math.PI, false);
-		context.fillStyle = 'black';
-		context.fill();
-		context.lineWidth = 5;
-		context.stroke();
-	};
-	$TurnRPG_Client_Controllers_$LevelController.$gridToGridHexagons = function(hexagons) {
-		var gridHexagons = [];
-		for (var y = 0; y < ss.arrayLength(hexagons, 0); y++) {
-			for (var x = 0; x < ss.arrayLength(hexagons, 1); x++) {
-				var $t1 = new $TurnRPG_$Client_Controllers_$LevelController$GridHexagon();
-				$t1.$x = x;
-				$t1.$y = y;
-				$t1.$hexagon = ss.arrayGet(hexagons, y, x);
-				gridHexagons.push($t1);
-			}
-		}
-		return gridHexagons;
-	};
 	////////////////////////////////////////////////////////////////////////////////
-	// TurnRPG.Client.Controllers.EnumerableExtensions
-	var $TurnRPG_Client_Controllers_EnumerableExtensions = function() {
+	// TurnRPG.Client.Controllers.IController
+	var $TurnRPG_Client_Controllers_IController = function() {
 	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.__typeName = 'TurnRPG.Client.Controllers.EnumerableExtensions';
-	$TurnRPG_Client_Controllers_EnumerableExtensions.indexOfFast = function(items, ind) {
-		for (var index = 0; index < items.length; index++) {
-			var item = items[index];
-			if (item === ind) {
-				return index;
-			}
-		}
-		return -1;
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.indexOfFast$1 = function(items, ind) {
-		for (var index = 0; index < items.length; index++) {
-			var item = items[index];
-			if (item === ind) {
-				return index;
-			}
-		}
-		return -1;
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.where$1 = function(T) {
-		return function(items, clause) {
-			var items2 = [];
-			for (var $t1 = 0; $t1 < items.length; $t1++) {
-				var item = items[$t1];
-				if (clause(item)) {
-					items2.push(item);
-				}
-			}
-			return Array.prototype.slice.call(items2);
-		};
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.first$2 = function(T) {
-		return function(items, clause) {
-			for (var $t1 = 0; $t1 < items.length; $t1++) {
-				var item = items[$t1];
-				if (clause(item)) {
-					return item;
-				}
-			}
-			return ss.getDefaultValue(T);
-		};
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.all$1 = function(T) {
-		return function(items, clause) {
-			for (var $t1 = 0; $t1 < items.length; $t1++) {
-				var item = items[$t1];
-				if (!clause(item)) {
-					return false;
-				}
-			}
-			return true;
-		};
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.first$1 = function(T) {
-		return function(items, clause) {
-			var $t1 = ss.getEnumerator(items);
-			try {
-				while ($t1.moveNext()) {
-					var item = $t1.current();
-					if (clause(item)) {
-						return item;
-					}
-				}
-			}
-			finally {
-				$t1.dispose();
-			}
-			return ss.getDefaultValue(T);
-		};
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.all = function(T) {
-		return function(items, clause) {
-			for (var $t1 = 0; $t1 < items.length; $t1++) {
-				var item = items[$t1];
-				if (!clause(item)) {
-					return false;
-				}
-			}
-			return true;
-		};
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.any = function(T) {
-		return function(items, clause) {
-			var $t1 = ss.getEnumerator(items);
-			try {
-				while ($t1.moveNext()) {
-					var item = $t1.current();
-					if (clause(item)) {
-						return true;
-					}
-				}
-			}
-			finally {
-				$t1.dispose();
-			}
-			return false;
-		};
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.any$1 = function(T) {
-		return function(items, clause) {
-			for (var $t1 = 0; $t1 < items.length; $t1++) {
-				var item = items[$t1];
-				if (clause(item)) {
-					return true;
-				}
-			}
-			return false;
-		};
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.orderBy$3 = function(T) {
-		return function(items, clause) {
-			var j = ss.arrayClone(items);
-			j.sort(function(a, b) {
-				return ss.compare(clause(a), clause(b));
-			});
-			return j;
-		};
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.orderBy = function(T) {
-		return function(items, clause) {
-			var j = ss.arrayClone($TurnRPG_Client_Controllers_EnumerableExtensions.toArray(T).call(null, items));
-			j.sort(function(a, b) {
-				return ss.compare(clause(a), clause(b));
-			});
-			return j;
-		};
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.orderBy$4 = function(T) {
-		return function(items, clause) {
-			var j = ss.arrayClone(items);
-			j.sort(function(a, b) {
-				return ss.compare(clause(a), clause(b));
-			});
-			return j;
-		};
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.orderBy$1 = function(T) {
-		return function(items, clause) {
-			var j = ss.arrayClone($TurnRPG_Client_Controllers_EnumerableExtensions.toArray(T).call(null, items));
-			j.sort(function(a, b) {
-				return ss.compare(clause(a), clause(b));
-			});
-			return j;
-		};
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.orderBy$5 = function(T) {
-		return function(items, clause) {
-			var j = ss.arrayClone(items);
-			j.sort(function(a, b) {
-				return ss.compare(clause(a), clause(b));
-			});
-			return j;
-		};
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.orderBy$2 = function(T) {
-		return function(items, clause) {
-			var j = ss.arrayClone($TurnRPG_Client_Controllers_EnumerableExtensions.toArray(T).call(null, items));
-			j.sort(function(a, b) {
-				return ss.compare(clause(a), clause(b));
-			});
-			return j;
-		};
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.toArray = function(T) {
-		return function(items) {
-			var ts = [];
-			var $t1 = ss.getEnumerator(items);
-			try {
-				while ($t1.moveNext()) {
-					var item = $t1.current();
-					ts.push(item);
-				}
-			}
-			finally {
-				$t1.dispose();
-			}
-			return Array.prototype.slice.call(ts);
-		};
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.select$1 = function(T, T2) {
-		return function(items, clause) {
-			var items2 = [];
-			for (var $t1 = 0; $t1 < items.length; $t1++) {
-				var item = items[$t1];
-				items2.push(clause(item));
-			}
-			return Array.prototype.slice.call(items2);
-		};
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.where = function(T) {
-		return function(items, clause) {
-			var items2 = [];
-			var $t1 = ss.getEnumerator(items);
-			try {
-				while ($t1.moveNext()) {
-					var item = $t1.current();
-					if (clause(item)) {
-						items2.push(item);
-					}
-				}
-			}
-			finally {
-				$t1.dispose();
-			}
-			return Array.prototype.slice.call(items2);
-		};
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.select = function(T, T2) {
-		return function(items, clause) {
-			var items2 = [];
-			for (var $t1 = 0; $t1 < items.length; $t1++) {
-				var item = items[$t1];
-				items2.push(clause(item));
-			}
-			return Array.prototype.slice.call(items2);
-		};
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.last = function(T) {
-		return function(items) {
-			var last = ss.getDefaultValue(T);
-			var $t1 = ss.getEnumerator(items);
-			try {
-				while ($t1.moveNext()) {
-					var item = $t1.current();
-					last = item;
-				}
-			}
-			finally {
-				$t1.dispose();
-			}
-			return last;
-		};
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.first = function(T) {
-		return function(items) {
-			var $t1 = ss.getEnumerator(items);
-			try {
-				while ($t1.moveNext()) {
-					var item = $t1.current();
-					return item;
-				}
-			}
-			finally {
-				$t1.dispose();
-			}
-			return ss.getDefaultValue(T);
-		};
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.groupBy = function(T, T2) {
-		return function(items, predicate) {
-			var ts = new (ss.makeGenericType(ss.Dictionary$2, [T2, Array]))();
-			var $t1 = ss.getEnumerator(items);
-			try {
-				while ($t1.moveNext()) {
-					var item = $t1.current();
-					var j = predicate(item);
-					if (!ts.containsKey(j)) {
-						ts.add(j, []);
-					}
-					ts.get_item(j).push(item);
-				}
-			}
-			finally {
-				$t1.dispose();
-			}
-			var ritems = [];
-			var $t2 = ts.getEnumerator();
-			try {
-				while ($t2.moveNext()) {
-					var t = $t2.current();
-					ritems.push(new (ss.makeGenericType($TurnRPG_Client_Controllers_GroupByItem$2, [T, T2]))(t.key, t.value));
-				}
-			}
-			finally {
-				$t2.dispose();
-			}
-			return ritems;
-		};
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.selectMany = function(T, T2) {
-		return function(items, clause) {
-			var items2 = [];
-			for (var $t1 = 0; $t1 < items.length; $t1++) {
-				var item = items[$t1];
-				ss.arrayAddRange(items2, clause(item));
-			}
-			return items2;
-		};
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.count = function(T) {
-		return function(items, clause) {
-			var j = 0;
-			for (var $t1 = 0; $t1 < items.length; $t1++) {
-				var item = items[$t1];
-				if (clause(item)) {
-					j++;
-				}
-			}
-			return j;
-		};
-	};
-	$TurnRPG_Client_Controllers_EnumerableExtensions.elementAt = function(T) {
-		return function(items, index) {
-			var i = 0;
-			var $t1 = ss.getEnumerator(items);
-			try {
-				while ($t1.moveNext()) {
-					var item = $t1.current();
-					if (i === index) {
-						return item;
-					}
-					i++;
-				}
-			}
-			finally {
-				$t1.dispose();
-			}
-			return ss.getDefaultValue(T);
-		};
-	};
-	global.TurnRPG.Client.Controllers.EnumerableExtensions = $TurnRPG_Client_Controllers_EnumerableExtensions;
-	////////////////////////////////////////////////////////////////////////////////
-	// TurnRPG.Client.Controllers.GroupByItem
-	var $TurnRPG_Client_Controllers_GroupByItem$2 = function(T, T2) {
-		var $type = function(key, values) {
-			this.$1$KeyField = ss.getDefaultValue(T2);
-			this.$1$ValuesField = null;
-			this.set_key(key);
-			this.set_values(values);
-		};
-		ss.registerGenericClassInstance($type, $TurnRPG_Client_Controllers_GroupByItem$2, [T, T2], {
-			get_key: function() {
-				return this.$1$KeyField;
-			},
-			set_key: function(value) {
-				this.$1$KeyField = value;
-			},
-			get_values: function() {
-				return this.$1$ValuesField;
-			},
-			set_values: function(value) {
-				this.$1$ValuesField = value;
-			},
-			getEnumerator: function() {
-				return ss.getEnumerator(this.get_values());
-			}
-		}, function() {
-			return null;
-		}, function() {
-			return [ss.IEnumerable, ss.IEnumerable];
-		});
-		return $type;
-	};
-	$TurnRPG_Client_Controllers_GroupByItem$2.__typeName = 'TurnRPG.Client.Controllers.GroupByItem$2';
-	ss.initGenericClass($TurnRPG_Client_Controllers_GroupByItem$2, $asm, 2);
-	global.TurnRPG.Client.Controllers.GroupByItem$2 = $TurnRPG_Client_Controllers_GroupByItem$2;
+	$TurnRPG_Client_Controllers_IController.__typeName = 'TurnRPG.Client.Controllers.IController';
+	global.TurnRPG.Client.Controllers.IController = $TurnRPG_Client_Controllers_IController;
 	////////////////////////////////////////////////////////////////////////////////
 	// TurnRPG.Client.Directives.DraggableDirective
 	var $TurnRPG_Client_Directives_DraggableDirective = function() {
@@ -622,11 +238,163 @@
 	$TurnRPG_Client_Filters_SwitchFilter.__typeName = 'TurnRPG.Client.Filters.SwitchFilter';
 	global.TurnRPG.Client.Filters.SwitchFilter = $TurnRPG_Client_Filters_SwitchFilter;
 	////////////////////////////////////////////////////////////////////////////////
+	// TurnRPG.Client.HexGame.DrawingUtilities
+	var $TurnRPG_Client_HexGame_DrawingUtilities = function() {
+	};
+	$TurnRPG_Client_HexGame_DrawingUtilities.__typeName = 'TurnRPG.Client.HexGame.DrawingUtilities';
+	$TurnRPG_Client_HexGame_DrawingUtilities.drawCircle = function(context) {
+		context.beginPath();
+		context.arc(0, 0, 5, 0, 2 * Math.PI, false);
+		context.fillStyle = 'black';
+		context.fill();
+		context.lineWidth = 5;
+		context.stroke();
+	};
+	$TurnRPG_Client_HexGame_DrawingUtilities.drawShape = function(context, points) {
+		context.beginPath();
+		var $t1 = ss.getEnumerator(points);
+		try {
+			while ($t1.moveNext()) {
+				var point = $t1.current();
+				context.translate(ss.Int32.trunc(point.x), ss.Int32.trunc(point.y));
+				context.lineTo(0, 0);
+				context.translate(ss.Int32.trunc(-point.x), ss.Int32.trunc(-point.y));
+			}
+		}
+		finally {
+			$t1.dispose();
+		}
+	};
+	$TurnRPG_Client_HexGame_DrawingUtilities.colorLuminance = function(hex, lum) {
+		// validate hex string
+		hex = hex.replace(new RegExp('[^0-9a-f]', 'gi'), '');
+		// convert to decimal and change luminosity
+		var rgb = '#';
+		for (var i = 0; i < 3; i++) {
+			var c = parseInt(hex.substr(i * 2, 2), 16);
+			var cs = ss.Int32.trunc(ss.round(Math.min(Math.max(0, c + c * lum), 255))).toString(16);
+			rgb += ('00' + cs).substr(cs.length);
+		}
+		return rgb;
+	};
+	$TurnRPG_Client_HexGame_DrawingUtilities.pointInPolygon = function(pointX, pointY, polygon) {
+		var isInside = false;
+		for (var i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+			if (polygon[i].y > pointY !== polygon[j].y > pointY && pointX < (polygon[j].x - polygon[i].x) * (pointY - polygon[i].y) / (polygon[j].y - polygon[i].y) + polygon[i].x) {
+				isInside = !isInside;
+			}
+		}
+		return isInside;
+	};
+	global.TurnRPG.Client.HexGame.DrawingUtilities = $TurnRPG_Client_HexGame_DrawingUtilities;
+	////////////////////////////////////////////////////////////////////////////////
+	// TurnRPG.Client.HexGame.GridHexagon
+	var $TurnRPG_Client_HexGame_GridHexagon = function() {
+		this.x = 0;
+		this.y = 0;
+		this.hexagon = null;
+	};
+	$TurnRPG_Client_HexGame_GridHexagon.__typeName = 'TurnRPG.Client.HexGame.GridHexagon';
+	global.TurnRPG.Client.HexGame.GridHexagon = $TurnRPG_Client_HexGame_GridHexagon;
+	////////////////////////////////////////////////////////////////////////////////
+	// TurnRPG.Client.HexGame.GridHexagonConstants
+	var $TurnRPG_Client_HexGame_GridHexagonConstants = function() {
+	};
+	$TurnRPG_Client_HexGame_GridHexagonConstants.__typeName = 'TurnRPG.Client.HexGame.GridHexagonConstants';
+	$TurnRPG_Client_HexGame_GridHexagonConstants.get_height = function() {
+		return Math.sqrt(3) / 2 * $TurnRPG_Client_HexGame_GridHexagonConstants.width * $TurnRPG_Client_HexGame_GridHexagonConstants.heightSkew;
+	};
+	$TurnRPG_Client_HexGame_GridHexagonConstants.get_depthHeight = function() {
+		return $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() * $TurnRPG_Client_HexGame_GridHexagonConstants.depthHeightSkew;
+	};
+	$TurnRPG_Client_HexGame_GridHexagonConstants.get_hexagonTopPolygon = function() {
+		return [$TurnRPG_Client_Utils_Point.$ctor($TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, -$TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2), $TurnRPG_Client_Utils_Point.$ctor($TurnRPG_Client_HexGame_GridHexagonConstants.width / 2, 0), $TurnRPG_Client_Utils_Point.$ctor($TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2), $TurnRPG_Client_Utils_Point.$ctor(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2), $TurnRPG_Client_Utils_Point.$ctor(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 2, 0), $TurnRPG_Client_Utils_Point.$ctor(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, -$TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2)];
+	};
+	$TurnRPG_Client_HexGame_GridHexagonConstants.hexagonDepthLeftPolygon = function(depthHeight) {
+		return [$TurnRPG_Client_Utils_Point.$ctor(0, depthHeight), $TurnRPG_Client_Utils_Point.$ctor($TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2), $TurnRPG_Client_Utils_Point.$ctor(0, -depthHeight), $TurnRPG_Client_Utils_Point.$ctor(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, -$TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2)];
+	};
+	$TurnRPG_Client_HexGame_GridHexagonConstants.hexagonDepthBottomPolygon = function(depthHeight) {
+		return [$TurnRPG_Client_Utils_Point.$ctor(0, depthHeight), $TurnRPG_Client_Utils_Point.$ctor($TurnRPG_Client_HexGame_GridHexagonConstants.width / 2, 0), $TurnRPG_Client_Utils_Point.$ctor(0, -depthHeight), $TurnRPG_Client_Utils_Point.$ctor(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 2, 0)];
+	};
+	$TurnRPG_Client_HexGame_GridHexagonConstants.hexagonDepthRightPolygon = function(depthHeight) {
+		return [$TurnRPG_Client_Utils_Point.$ctor(0, depthHeight), $TurnRPG_Client_Utils_Point.$ctor($TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, -$TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2), $TurnRPG_Client_Utils_Point.$ctor(0, -depthHeight), $TurnRPG_Client_Utils_Point.$ctor(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2)];
+	};
+	global.TurnRPG.Client.HexGame.GridHexagonConstants = $TurnRPG_Client_HexGame_GridHexagonConstants;
+	////////////////////////////////////////////////////////////////////////////////
+	// TurnRPG.Client.HexGame.Hexagon
+	var $TurnRPG_Client_HexGame_Hexagon = function() {
+		this.color = null;
+		this.enabled = false;
+		this.height = 0;
+	};
+	$TurnRPG_Client_HexGame_Hexagon.__typeName = 'TurnRPG.Client.HexGame.Hexagon';
+	global.TurnRPG.Client.HexGame.Hexagon = $TurnRPG_Client_HexGame_Hexagon;
+	////////////////////////////////////////////////////////////////////////////////
+	// TurnRPG.Client.HexGame.HexBoard
+	var $TurnRPG_Client_HexGame_HexBoard = function() {
+		this.hexList = null;
+		this.grid = null;
+	};
+	$TurnRPG_Client_HexGame_HexBoard.__typeName = 'TurnRPG.Client.HexGame.HexBoard';
+	$TurnRPG_Client_HexGame_HexBoard.$gridToGridHexagons = function(hexagons) {
+		var gridHexagons = [];
+		for (var y = 0; y < ss.arrayLength(hexagons, 0); y++) {
+			for (var x = 0; x < ss.arrayLength(hexagons, 1); x++) {
+				var $t1 = new $TurnRPG_Client_HexGame_GridHexagon();
+				$t1.x = x;
+				$t1.y = y;
+				$t1.hexagon = ss.arrayGet(hexagons, y, x);
+				gridHexagons.push($t1);
+			}
+		}
+		return gridHexagons;
+	};
+	global.TurnRPG.Client.HexGame.HexBoard = $TurnRPG_Client_HexGame_HexBoard;
+	////////////////////////////////////////////////////////////////////////////////
 	// TurnRPG.Client.Scope._KeepBaseScopeAlive
 	var $TurnRPG_Client_Scope__KeepBaseScopeAlive = function() {
 	};
 	$TurnRPG_Client_Scope__KeepBaseScopeAlive.__typeName = 'TurnRPG.Client.Scope._KeepBaseScopeAlive';
 	global.TurnRPG.Client.Scope._KeepBaseScopeAlive = $TurnRPG_Client_Scope__KeepBaseScopeAlive;
+	////////////////////////////////////////////////////////////////////////////////
+	// TurnRPG.Client.Scope.Controller.HexEditorScope
+	var $TurnRPG_Client_Scope_Controller_HexEditorScope = function() {
+		this.model = null;
+		this.callback = null;
+		$TurnRPG_Client_Scope_Directive_FloatingWindowBaseScope.call(this);
+	};
+	$TurnRPG_Client_Scope_Controller_HexEditorScope.__typeName = 'TurnRPG.Client.Scope.Controller.HexEditorScope';
+	global.TurnRPG.Client.Scope.Controller.HexEditorScope = $TurnRPG_Client_Scope_Controller_HexEditorScope;
+	////////////////////////////////////////////////////////////////////////////////
+	// TurnRPG.Client.Scope.Controller.HexEditorScopeCallback
+	var $TurnRPG_Client_Scope_Controller_HexEditorScopeCallback = function() {
+	};
+	$TurnRPG_Client_Scope_Controller_HexEditorScopeCallback.__typeName = 'TurnRPG.Client.Scope.Controller.HexEditorScopeCallback';
+	$TurnRPG_Client_Scope_Controller_HexEditorScopeCallback.createInstance = function() {
+		return $TurnRPG_Client_Scope_Controller_HexEditorScopeCallback.$ctor();
+	};
+	$TurnRPG_Client_Scope_Controller_HexEditorScopeCallback.$ctor = function() {
+		var $this = {};
+		$this.windowClosed = null;
+		return $this;
+	};
+	global.TurnRPG.Client.Scope.Controller.HexEditorScopeCallback = $TurnRPG_Client_Scope_Controller_HexEditorScopeCallback;
+	////////////////////////////////////////////////////////////////////////////////
+	// TurnRPG.Client.Scope.Controller.HexEditorScopeModel
+	var $TurnRPG_Client_Scope_Controller_HexEditorScopeModel = function() {
+	};
+	$TurnRPG_Client_Scope_Controller_HexEditorScopeModel.__typeName = 'TurnRPG.Client.Scope.Controller.HexEditorScopeModel';
+	$TurnRPG_Client_Scope_Controller_HexEditorScopeModel.createInstance = function() {
+		return $TurnRPG_Client_Scope_Controller_HexEditorScopeModel.$ctor();
+	};
+	$TurnRPG_Client_Scope_Controller_HexEditorScopeModel.$ctor = function() {
+		var $this = {};
+		$this.width = 0;
+		$this.heightSkew = 0;
+		$this.depthHeightSkew = 0;
+		return $this;
+	};
+	global.TurnRPG.Client.Scope.Controller.HexEditorScopeModel = $TurnRPG_Client_Scope_Controller_HexEditorScopeModel;
 	////////////////////////////////////////////////////////////////////////////////
 	// TurnRPG.Client.Scope.Controller.LevelScope
 	var $TurnRPG_Client_Scope_Controller_LevelScope = function() {
@@ -843,6 +611,331 @@
 	$TurnRPG_Client_Utils_Constants.__typeName = 'TurnRPG.Client.Utils.Constants';
 	global.TurnRPG.Client.Utils.Constants = $TurnRPG_Client_Utils_Constants;
 	////////////////////////////////////////////////////////////////////////////////
+	// TurnRPG.Client.Utils.EnumerableExtensions
+	var $TurnRPG_Client_Utils_EnumerableExtensions = function() {
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.__typeName = 'TurnRPG.Client.Utils.EnumerableExtensions';
+	$TurnRPG_Client_Utils_EnumerableExtensions.indexOfFast = function(items, ind) {
+		for (var index = 0; index < items.length; index++) {
+			var item = items[index];
+			if (item === ind) {
+				return index;
+			}
+		}
+		return -1;
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.indexOfFast$1 = function(items, ind) {
+		for (var index = 0; index < items.length; index++) {
+			var item = items[index];
+			if (item === ind) {
+				return index;
+			}
+		}
+		return -1;
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.where$1 = function(T) {
+		return function(items, clause) {
+			var items2 = [];
+			for (var $t1 = 0; $t1 < items.length; $t1++) {
+				var item = items[$t1];
+				if (clause(item)) {
+					items2.push(item);
+				}
+			}
+			return Array.prototype.slice.call(items2);
+		};
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.first$2 = function(T) {
+		return function(items, clause) {
+			for (var $t1 = 0; $t1 < items.length; $t1++) {
+				var item = items[$t1];
+				if (clause(item)) {
+					return item;
+				}
+			}
+			return ss.getDefaultValue(T);
+		};
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.all$1 = function(T) {
+		return function(items, clause) {
+			for (var $t1 = 0; $t1 < items.length; $t1++) {
+				var item = items[$t1];
+				if (!clause(item)) {
+					return false;
+				}
+			}
+			return true;
+		};
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.first$1 = function(T) {
+		return function(items, clause) {
+			var $t1 = ss.getEnumerator(items);
+			try {
+				while ($t1.moveNext()) {
+					var item = $t1.current();
+					if (clause(item)) {
+						return item;
+					}
+				}
+			}
+			finally {
+				$t1.dispose();
+			}
+			return ss.getDefaultValue(T);
+		};
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.all = function(T) {
+		return function(items, clause) {
+			for (var $t1 = 0; $t1 < items.length; $t1++) {
+				var item = items[$t1];
+				if (!clause(item)) {
+					return false;
+				}
+			}
+			return true;
+		};
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.any = function(T) {
+		return function(items, clause) {
+			var $t1 = ss.getEnumerator(items);
+			try {
+				while ($t1.moveNext()) {
+					var item = $t1.current();
+					if (clause(item)) {
+						return true;
+					}
+				}
+			}
+			finally {
+				$t1.dispose();
+			}
+			return false;
+		};
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.any$1 = function(T) {
+		return function(items, clause) {
+			for (var $t1 = 0; $t1 < items.length; $t1++) {
+				var item = items[$t1];
+				if (clause(item)) {
+					return true;
+				}
+			}
+			return false;
+		};
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.orderBy$3 = function(T) {
+		return function(items, clause) {
+			var j = ss.arrayClone(items);
+			j.sort(function(a, b) {
+				return ss.compare(clause(a), clause(b));
+			});
+			return j;
+		};
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.orderBy = function(T) {
+		return function(items, clause) {
+			var j = ss.arrayClone($TurnRPG_Client_Utils_EnumerableExtensions.toArray(T).call(null, items));
+			j.sort(function(a, b) {
+				return ss.compare(clause(a), clause(b));
+			});
+			return j;
+		};
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.orderBy$4 = function(T) {
+		return function(items, clause) {
+			var j = ss.arrayClone(items);
+			j.sort(function(a, b) {
+				return ss.compare(clause(a), clause(b));
+			});
+			return j;
+		};
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.orderBy$1 = function(T) {
+		return function(items, clause) {
+			var j = ss.arrayClone($TurnRPG_Client_Utils_EnumerableExtensions.toArray(T).call(null, items));
+			j.sort(function(a, b) {
+				return ss.compare(clause(a), clause(b));
+			});
+			return j;
+		};
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.orderBy$5 = function(T) {
+		return function(items, clause) {
+			var j = ss.arrayClone(items);
+			j.sort(function(a, b) {
+				return ss.compare(clause(a), clause(b));
+			});
+			return j;
+		};
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.orderBy$2 = function(T) {
+		return function(items, clause) {
+			var j = ss.arrayClone($TurnRPG_Client_Utils_EnumerableExtensions.toArray(T).call(null, items));
+			j.sort(function(a, b) {
+				return ss.compare(clause(a), clause(b));
+			});
+			return j;
+		};
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.toArray = function(T) {
+		return function(items) {
+			var ts = [];
+			var $t1 = ss.getEnumerator(items);
+			try {
+				while ($t1.moveNext()) {
+					var item = $t1.current();
+					ts.push(item);
+				}
+			}
+			finally {
+				$t1.dispose();
+			}
+			return Array.prototype.slice.call(ts);
+		};
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.select$1 = function(T, T2) {
+		return function(items, clause) {
+			var items2 = [];
+			for (var $t1 = 0; $t1 < items.length; $t1++) {
+				var item = items[$t1];
+				items2.push(clause(item));
+			}
+			return Array.prototype.slice.call(items2);
+		};
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.where = function(T) {
+		return function(items, clause) {
+			var items2 = [];
+			var $t1 = ss.getEnumerator(items);
+			try {
+				while ($t1.moveNext()) {
+					var item = $t1.current();
+					if (clause(item)) {
+						items2.push(item);
+					}
+				}
+			}
+			finally {
+				$t1.dispose();
+			}
+			return Array.prototype.slice.call(items2);
+		};
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.select = function(T, T2) {
+		return function(items, clause) {
+			var items2 = [];
+			for (var $t1 = 0; $t1 < items.length; $t1++) {
+				var item = items[$t1];
+				items2.push(clause(item));
+			}
+			return Array.prototype.slice.call(items2);
+		};
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.last = function(T) {
+		return function(items) {
+			var last = ss.getDefaultValue(T);
+			var $t1 = ss.getEnumerator(items);
+			try {
+				while ($t1.moveNext()) {
+					var item = $t1.current();
+					last = item;
+				}
+			}
+			finally {
+				$t1.dispose();
+			}
+			return last;
+		};
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.first = function(T) {
+		return function(items) {
+			var $t1 = ss.getEnumerator(items);
+			try {
+				while ($t1.moveNext()) {
+					var item = $t1.current();
+					return item;
+				}
+			}
+			finally {
+				$t1.dispose();
+			}
+			return ss.getDefaultValue(T);
+		};
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.groupBy = function(T, T2) {
+		return function(items, predicate) {
+			var ts = new (ss.makeGenericType(ss.Dictionary$2, [T2, Array]))();
+			var $t1 = ss.getEnumerator(items);
+			try {
+				while ($t1.moveNext()) {
+					var item = $t1.current();
+					var j = predicate(item);
+					if (!ts.containsKey(j)) {
+						ts.add(j, []);
+					}
+					ts.get_item(j).push(item);
+				}
+			}
+			finally {
+				$t1.dispose();
+			}
+			var ritems = [];
+			var $t2 = ts.getEnumerator();
+			try {
+				while ($t2.moveNext()) {
+					var t = $t2.current();
+					ritems.push(new (ss.makeGenericType($TurnRPG_Client_Utils_GroupByItem$2, [T, T2]))(t.key, t.value));
+				}
+			}
+			finally {
+				$t2.dispose();
+			}
+			return ritems;
+		};
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.selectMany = function(T, T2) {
+		return function(items, clause) {
+			var items2 = [];
+			for (var $t1 = 0; $t1 < items.length; $t1++) {
+				var item = items[$t1];
+				ss.arrayAddRange(items2, clause(item));
+			}
+			return items2;
+		};
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.count = function(T) {
+		return function(items, clause) {
+			var j = 0;
+			for (var $t1 = 0; $t1 < items.length; $t1++) {
+				var item = items[$t1];
+				if (clause(item)) {
+					j++;
+				}
+			}
+			return j;
+		};
+	};
+	$TurnRPG_Client_Utils_EnumerableExtensions.elementAt = function(T) {
+		return function(items, index) {
+			var i = 0;
+			var $t1 = ss.getEnumerator(items);
+			try {
+				while ($t1.moveNext()) {
+					var item = $t1.current();
+					if (i === index) {
+						return item;
+					}
+					i++;
+				}
+			}
+			finally {
+				$t1.dispose();
+			}
+			return ss.getDefaultValue(T);
+		};
+	};
+	global.TurnRPG.Client.Utils.EnumerableExtensions = $TurnRPG_Client_Utils_EnumerableExtensions;
+	////////////////////////////////////////////////////////////////////////////////
 	// TurnRPG.Client.Utils.Extensions
 	var $TurnRPG_Client_Utils_Extensions = function() {
 	};
@@ -880,6 +973,41 @@
 		return num + '%';
 	};
 	global.TurnRPG.Client.Utils.Extensions = $TurnRPG_Client_Utils_Extensions;
+	////////////////////////////////////////////////////////////////////////////////
+	// TurnRPG.Client.Utils.GroupByItem
+	var $TurnRPG_Client_Utils_GroupByItem$2 = function(T, T2) {
+		var $type = function(key, values) {
+			this.$1$KeyField = ss.getDefaultValue(T2);
+			this.$1$ValuesField = null;
+			this.set_key(key);
+			this.set_values(values);
+		};
+		ss.registerGenericClassInstance($type, $TurnRPG_Client_Utils_GroupByItem$2, [T, T2], {
+			get_key: function() {
+				return this.$1$KeyField;
+			},
+			set_key: function(value) {
+				this.$1$KeyField = value;
+			},
+			get_values: function() {
+				return this.$1$ValuesField;
+			},
+			set_values: function(value) {
+				this.$1$ValuesField = value;
+			},
+			getEnumerator: function() {
+				return ss.getEnumerator(this.get_values());
+			}
+		}, function() {
+			return null;
+		}, function() {
+			return [ss.IEnumerable, ss.IEnumerable];
+		});
+		return $type;
+	};
+	$TurnRPG_Client_Utils_GroupByItem$2.__typeName = 'TurnRPG.Client.Utils.GroupByItem$2';
+	ss.initGenericClass($TurnRPG_Client_Utils_GroupByItem$2, $asm, 2);
+	global.TurnRPG.Client.Utils.GroupByItem$2 = $TurnRPG_Client_Utils_GroupByItem$2;
 	////////////////////////////////////////////////////////////////////////////////
 	// TurnRPG.Client.Utils.Help
 	var $TurnRPG_Client_Utils_Help = function() {
@@ -953,164 +1081,28 @@
 		return $this;
 	};
 	global.TurnRPG.Client.Utils.Pointer = $TurnRPG_Client_Utils_Pointer;
-	ss.initClass($LevelModel, $asm, {});
-	ss.initClass($TurnRPG_$Client_Controllers_$LevelController$GridHexagon, $asm, {});
-	ss.initClass($TurnRPG_$Client_Controllers_$LevelController$Hexagon, $asm, {});
 	ss.initClass($TurnRPG_Client_BuildAngular, $asm, {});
+	ss.initInterface($TurnRPG_Client_Controllers_IController, $asm, {});
+	ss.initClass($TurnRPG_Client_Controllers_$HexEditorController, $asm, {}, null, [$TurnRPG_Client_Controllers_IController]);
 	ss.initClass($TurnRPG_Client_Controllers_$LevelController, $asm, {
+		$draw: function() {
+			this.$canvas.width = this.$canvas.width;
+			this.$hexBoard.drawBoard(this.$context);
+		},
 		$init: function() {
-			this.$image = new Image();
-			this.$image.src = '/images/sheepHex.png';
 			var $t1 = document.getElementById('levelCanvas');
 			this.$canvas = ss.cast($t1, ss.isValue($t1) && (ss.isInstanceOfType($t1, Element) && $t1.tagName === 'CANVAS'));
 			this.$canvas.width = document.body.clientWidth;
 			this.$canvas.height = document.body.clientHeight;
 			this.$context = ss.cast(this.$canvas.getContext('2d'), CanvasRenderingContext2D);
-			this.$grid = ss.multidimArray(null, 10, 10);
-			for (var y = 0; y < 10; y++) {
-				for (var x = 0; x < 10; x++) {
-					var randomColor = '#' + ss.Int32.trunc(Math.floor(Math.random() * 8388607 + 8388607)).toString(16);
-					var $t3 = this.$grid;
-					var $t2 = new $TurnRPG_$Client_Controllers_$LevelController$Hexagon();
-					$t2.$color = $TurnRPG_Client_Utils_Help.getRandomColor();
-					$t2.$enabled = Math.random() * 100 > 40;
-					$t2.$height = 0;
-					ss.arraySet($t3, y, x, $t2);
-					if (Math.random() * 100 < 10) {
-						ss.arrayGet(this.$grid, y, x).$height = 1;
-					}
-					if (Math.random() * 100 < 5) {
-						ss.arrayGet(this.$grid, y, x).$height = 2;
-					}
-				}
-			}
-		},
-		$drawBoard: function() {
-			this.$canvas.width = this.$canvas.width;
-			this.$context.save();
-			var gridHexagons = $TurnRPG_Client_Controllers_$LevelController.$gridToGridHexagons(this.$grid);
-			var hexs = $TurnRPG_Client_Controllers_EnumerableExtensions.orderBy$2($TurnRPG_$Client_Controllers_$LevelController$GridHexagon).call(null, gridHexagons, function(m) {
-				return m.$y * 1000 + m.$x % 2 * -200 + m.$hexagon.$height;
+			this.$canvas.onclick = ss.mkdel(this, function(e) {
+				var x = ss.unbox(ss.cast(e.offsetX, ss.Int32));
+				var y = ss.unbox(ss.cast(e.offsetY, ss.Int32));
+				this.$hexBoard.clickBoard(x, y);
 			});
-			this.$context.translate(200, 200);
-			for (var $t1 = 0; $t1 < hexs.length; $t1++) {
-				var gridHexagon = hexs[$t1];
-				this.$drawHexagon(gridHexagon);
-			}
-			this.$context.restore();
-		},
-		$drawHexagon: function(gridHexagon) {
-			this.$context.save();
-			var x = this.$width * 3 / 4 * gridHexagon.$x;
-			var myHeight = $TurnRPG_Client_Controllers_$LevelController.$transformHeight(gridHexagon.$y, this.$height);
-			var y = gridHexagon.$y * this.$height + ((gridHexagon.$x % 2 === 1) ? (-myHeight / 2) : 0);
-			this.$context.lineWidth = 3;
-			this.$context.translate(x, y);
-			this.$drawBlockHeight(this.$context, gridHexagon);
-			this.$drawHex(this.$context, gridHexagon);
-			this.$context.restore();
-		},
-		$drawHex: function(context, gh) {
-			var hexagon = gh.$hexagon;
-			if (!hexagon.$enabled) {
-				return;
-			}
-			var myHeight = $TurnRPG_Client_Controllers_$LevelController.$transformHeight(gh.$y, this.$height);
-			context.save();
-			context.beginPath();
-			context.translate(0, -hexagon.$height * this.$blockHeight);
-			context.moveTo(0, 0);
-			context.translate(this.$width / 4, -myHeight / 2);
-			context.lineTo(0, 0);
-			context.translate(this.$width / 2, 0);
-			context.lineTo(0, 0);
-			context.translate(this.$width / 4, myHeight / 2);
-			context.lineTo(0, 0);
-			context.translate(-this.$width / 4, myHeight / 2);
-			context.lineTo(0, 0);
-			context.translate(-this.$width / 2, 0);
-			context.lineTo(0, 0);
-			context.translate(-this.$width / 4, -myHeight / 2);
-			context.lineTo(0, 0);
-			//            context.Stroke();
-			//            context.Clip();
-			//            context.DrawImage(image, 0, -myHeight / 2);
-			context.fillStyle = hexagon.$color;
-			context.fill();
-			context.restore();
-		},
-		$drawBlockHeight: function(context, gh) {
-			var hexagon = gh.$hexagon;
-			if (!hexagon.$enabled) {
-				return;
-			}
-			context.save();
-			context.translate(0, -hexagon.$height * this.$blockHeight);
-			var myBlockHeight = (hexagon.$height + 1) * this.$blockHeight;
-			var myHeight = $TurnRPG_Client_Controllers_$LevelController.$transformHeight(gh.$y, this.$height);
-			context.save();
-			context.beginPath();
-			context.moveTo(0, 0);
-			context.translate(0, myBlockHeight);
-			context.lineTo(0, 0);
-			context.translate(this.$width / 4, myHeight / 2);
-			context.lineTo(0, 0);
-			context.translate(0, -myBlockHeight);
-			context.lineTo(0, 0);
-			context.translate(-this.$width / 4, -myHeight / 2);
-			context.lineTo(0, 0);
-			//            context.Stroke();
-			context.fillStyle = this.$colorLuminance(hexagon.$color, -0.3);
-			context.fill();
-			context.restore();
-			context.save();
-			context.beginPath();
-			context.translate(this.$width / 4, myHeight / 2);
-			context.moveTo(0, 0);
-			context.translate(0, myBlockHeight);
-			context.lineTo(0, 0);
-			context.translate(this.$width / 2, 0);
-			context.lineTo(0, 0);
-			context.translate(0, -myBlockHeight);
-			context.lineTo(0, 0);
-			context.translate(-this.$width / 2, 0);
-			context.lineTo(0, 0);
-			//            context.Stroke();
-			context.fillStyle = this.$colorLuminance(hexagon.$color, -0.4);
-			context.fill();
-			context.restore();
-			context.save();
-			context.beginPath();
-			context.translate(this.$width * 3 / 4, myHeight / 2);
-			context.moveTo(0, 0);
-			context.translate(0, myBlockHeight);
-			context.lineTo(0, 0);
-			context.translate(this.$width / 4, -myHeight / 2);
-			context.lineTo(0, 0);
-			context.translate(0, -myBlockHeight);
-			context.lineTo(0, 0);
-			context.translate(-this.$width / 4, myHeight / 2);
-			context.lineTo(0, 0);
-			//            context.Stroke();
-			context.fillStyle = this.$colorLuminance(hexagon.$color, -0.5);
-			context.fill();
-			context.restore();
-			context.restore();
-		},
-		$colorLuminance: function(hex, lum) {
-			// validate hex string
-			hex = hex.replace(new RegExp('[^0-9a-f]', 'gi'), '');
-			// convert to decimal and change luminosity
-			var rgb = '#';
-			for (var i = 0; i < 3; i++) {
-				var c = parseInt(hex.substr(i * 2, 2), 16);
-				var cs = ss.Int32.trunc(ss.round(Math.min(Math.max(0, c + c * lum), 255))).toString(16);
-				rgb += ('00' + cs).substr(cs.length);
-			}
-			return rgb;
+			this.$hexBoard.init();
 		}
 	});
-	ss.initClass($TurnRPG_Client_Controllers_EnumerableExtensions, $asm, {});
 	ss.initClass($TurnRPG_Client_Directives_DraggableDirective, $asm, {
 		$linkFn: function(scope, element, attrs) {
 			element.draggable({ cancel: '.window .inner-window' });
@@ -1352,12 +1344,206 @@
 			return (val ? on : off);
 		}
 	});
+	ss.initClass($TurnRPG_Client_HexGame_DrawingUtilities, $asm, {});
+	ss.initClass($TurnRPG_Client_HexGame_GridHexagon, $asm, {
+		drawHex: function(context) {
+			if (!this.hexagon.enabled) {
+				return;
+			}
+			context.save();
+			context.translate(0, -this.hexagon.height * $TurnRPG_Client_HexGame_GridHexagonConstants.get_depthHeight());
+			$TurnRPG_Client_HexGame_DrawingUtilities.drawShape(context, $TurnRPG_Client_HexGame_GridHexagonConstants.get_hexagonTopPolygon());
+			context.fillStyle = this.hexagon.color;
+			context.strokeStyle = this.hexagon.color;
+			context.stroke();
+			context.fill();
+			context.restore();
+		},
+		drawDepth: function(context) {
+			if (!this.hexagon.enabled) {
+				return;
+			}
+			var myDepthHeight = (this.hexagon.height + 1) * $TurnRPG_Client_HexGame_GridHexagonConstants.get_depthHeight();
+			context.save();
+			context.translate(0, -this.hexagon.height * $TurnRPG_Client_HexGame_GridHexagonConstants.get_depthHeight());
+			context.save();
+			context.translate(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 2, 0);
+			$TurnRPG_Client_HexGame_DrawingUtilities.drawShape(context, $TurnRPG_Client_HexGame_GridHexagonConstants.hexagonDepthLeftPolygon(myDepthHeight));
+			context.fillStyle = $TurnRPG_Client_HexGame_DrawingUtilities.colorLuminance(this.hexagon.color, -0.3);
+			context.strokeStyle = $TurnRPG_Client_HexGame_DrawingUtilities.colorLuminance(this.hexagon.color, -0.3);
+			context.stroke();
+			context.fill();
+			context.restore();
+			//
+			//
+			//
+			//            context.Save();
+			//
+			//
+			//
+			//            context.Translate(GridHexagonConstants.Width / 4, GridHexagonConstants.Height / 2);
+			//
+			//
+			//
+			//            
+			//
+			//
+			//
+			//            DrawingUtilities.DrawShape(context, GridHexagonConstants.HexagonDepthBottomPolygon(myDepthHeight));
+			//
+			//
+			//
+			//            context.FillStyle = DrawingUtilities.ColorLuminance(Hexagon.Color, -.4);
+			//
+			//
+			//
+			//            context.StrokeStyle = DrawingUtilities.ColorLuminance(Hexagon.Color, -.4);
+			//
+			//
+			//
+			//            context.Stroke();
+			//
+			//
+			//
+			//            context.Fill();
+			//
+			//
+			//
+			//            context.Restore();
+			//
+			//
+			//
+			//            
+			//
+			//
+			//
+			//            
+			//
+			//
+			//
+			//            
+			//
+			//
+			//
+			//            
+			//
+			//
+			//
+			//            context.Save();
+			//
+			//
+			//
+			//            context.Translate(GridHexagonConstants.Width * 3 / 4, GridHexagonConstants.Height / 2);
+			//
+			//
+			//
+			//            
+			//
+			//
+			//
+			//            DrawingUtilities.DrawShape(context, GridHexagonConstants.HexagonDepthRightPolygon(myDepthHeight));
+			//
+			//
+			//
+			//            context.FillStyle = DrawingUtilities.ColorLuminance(Hexagon.Color, -.5);
+			//
+			//
+			//
+			//            context.StrokeStyle = DrawingUtilities.ColorLuminance(Hexagon.Color, -.5);
+			//
+			//
+			//
+			//            context.Stroke();
+			//
+			//
+			//
+			//            context.Fill();
+			//
+			//
+			//
+			//            context.Restore();
+			context.restore();
+		},
+		draw: function(context) {
+			this.drawDepth(context);
+			this.drawHex(context);
+		},
+		click: function() {
+			this.hexagon.enabled = false;
+			this.hexagon.color = $TurnRPG_Client_Utils_Help.getRandomColor();
+		}
+	});
+	ss.initClass($TurnRPG_Client_HexGame_GridHexagonConstants, $asm, {});
+	ss.initClass($TurnRPG_Client_HexGame_Hexagon, $asm, {});
+	ss.initClass($TurnRPG_Client_HexGame_HexBoard, $asm, {
+		init: function() {
+			this.grid = ss.multidimArray(null, 10, 10);
+			for (var y = 0; y < 10; y++) {
+				for (var x = 0; x < 10; x++) {
+					var $t2 = this.grid;
+					var $t1 = new $TurnRPG_Client_HexGame_Hexagon();
+					$t1.color = $TurnRPG_Client_Utils_Help.getRandomColor();
+					$t1.enabled = Math.random() * 100 > 60;
+					$t1.height = 0;
+					ss.arraySet($t2, y, x, $t1);
+					if (Math.random() * 100 < 2) {
+						ss.arrayGet(this.grid, y, x).height = 1;
+					}
+					if (Math.random() * 100 < 1) {
+						ss.arrayGet(this.grid, y, x).height = 2;
+					}
+					ss.arrayGet(this.grid, y, x).height = 0;
+				}
+			}
+			this.$buildHexList();
+		},
+		clickBoard: function(clickX, clickY) {
+			for (var $t1 = 0; $t1 < this.hexList.length; $t1++) {
+				var gridHexagon = this.hexList[$t1];
+				var x = $TurnRPG_Client_HexGame_GridHexagonConstants.width * 3 / 4 * gridHexagon.x;
+				var y = gridHexagon.y * $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() + ((gridHexagon.x % 2 === 1) ? (-$TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2) : 0);
+				y -= gridHexagon.hexagon.height * $TurnRPG_Client_HexGame_GridHexagonConstants.get_depthHeight();
+				if ($TurnRPG_Client_HexGame_DrawingUtilities.pointInPolygon(clickX - x, clickY - y, $TurnRPG_Client_HexGame_GridHexagonConstants.get_hexagonTopPolygon())) {
+					gridHexagon.click();
+					break;
+				}
+			}
+		},
+		$buildHexList: function() {
+			var gridHexagons = $TurnRPG_Client_HexGame_HexBoard.$gridToGridHexagons(this.grid);
+			this.hexList = $TurnRPG_Client_Utils_EnumerableExtensions.orderBy$2($TurnRPG_Client_HexGame_GridHexagon).call(null, gridHexagons, function(m) {
+				return m.y * 1000 + m.x % 2 * -200 + m.hexagon.height;
+			});
+		},
+		drawBoard: function(context) {
+			context.save();
+			context.lineWidth = 2;
+			context.lineJoin = 'round';
+			context.lineCap = 'round';
+			for (var $t1 = 0; $t1 < this.hexList.length; $t1++) {
+				var gridHexagon = this.hexList[$t1];
+				this.$drawHexagon(context, gridHexagon);
+			}
+			context.restore();
+		},
+		$drawHexagon: function(context, gridHexagon) {
+			context.save();
+			var x = $TurnRPG_Client_HexGame_GridHexagonConstants.width * 3 / 4 * gridHexagon.x;
+			var y = gridHexagon.y * $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() + ((gridHexagon.x % 2 === 1) ? (-$TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2) : 0);
+			context.translate(ss.Int32.trunc(x), ss.Int32.trunc(y));
+			gridHexagon.draw(context);
+			context.restore();
+		}
+	});
 	ss.initClass($TurnRPG_Client_Scope__KeepBaseScopeAlive, $asm, {});
+	ss.initClass($TurnRPG_Client_Services_ManagedScope, $asm, {}, TurnRPG.Client.Scope.BaseScope);
+	ss.initClass($TurnRPG_Client_Scope_Directive_FloatingWindowBaseScope, $asm, {}, $TurnRPG_Client_Services_ManagedScope);
+	ss.initClass($TurnRPG_Client_Scope_Controller_HexEditorScope, $asm, {}, $TurnRPG_Client_Scope_Directive_FloatingWindowBaseScope);
+	ss.initClass($TurnRPG_Client_Scope_Controller_HexEditorScopeCallback, $asm, {});
+	ss.initClass($TurnRPG_Client_Scope_Controller_HexEditorScopeModel, $asm, {});
 	ss.initClass($TurnRPG_Client_Scope_Controller_LevelScope, $asm, {}, TurnRPG.Client.Scope.BaseScope);
 	ss.initClass($TurnRPG_Client_Scope_Controller_LevelScopeCallback, $asm, {});
 	ss.initClass($TurnRPG_Client_Scope_Controller_LevelScopeModel, $asm, {});
-	ss.initClass($TurnRPG_Client_Services_ManagedScope, $asm, {}, TurnRPG.Client.Scope.BaseScope);
-	ss.initClass($TurnRPG_Client_Scope_Directive_FloatingWindowBaseScope, $asm, {}, $TurnRPG_Client_Services_ManagedScope);
 	ss.initClass($TurnRPG_Client_Scope_Directive_FloatingWindowPosition, $asm, {});
 	ss.initClass($TurnRPG_Client_Scope_Directive_FloatingWindowScope, $asm, {}, TurnRPG.Client.Scope.BaseScope);
 	ss.initClass($TurnRPG_Client_Scope_Directive_Size, $asm, {});
@@ -1453,6 +1639,7 @@
 	});
 	ss.initClass($TurnRPG_Client_Utils_CanvasInformation, $asm, {});
 	ss.initClass($TurnRPG_Client_Utils_Constants, $asm, {});
+	ss.initClass($TurnRPG_Client_Utils_EnumerableExtensions, $asm, {});
 	ss.initClass($TurnRPG_Client_Utils_Extensions, $asm, {});
 	ss.initClass($TurnRPG_Client_Utils_Help, $asm, {});
 	ss.initClass($TurnRPG_Client_Utils_Point, $asm, {});
@@ -1461,8 +1648,26 @@
 		$TurnRPG_Client_Utils_Help.colors = ['#FF0000', '#00FF00', '#880088', '#888800', '#008888'];
 	})();
 	(function() {
+		$TurnRPG_Client_HexGame_GridHexagonConstants.heightSkew = 0;
+		$TurnRPG_Client_HexGame_GridHexagonConstants.depthHeightSkew = 0;
+		$TurnRPG_Client_HexGame_GridHexagonConstants.width = 0;
+		$TurnRPG_Client_HexGame_GridHexagonConstants.width = 260;
+		$TurnRPG_Client_HexGame_GridHexagonConstants.heightSkew = 0.55;
+		$TurnRPG_Client_HexGame_GridHexagonConstants.depthHeightSkew = 0.4;
+		//
+		//            Width = 130;
+		//
+		//            HeightSkew = 1;
+		//
+		//            DepthHeightSkew = 0;
+	})();
+	(function() {
 		$TurnRPG_Client_Controllers_$LevelController.$name = 'LevelController';
 		$TurnRPG_Client_Controllers_$LevelController.$view = 'Level';
+	})();
+	(function() {
+		$TurnRPG_Client_Controllers_$HexEditorController.$name = 'HexEditorController';
+		$TurnRPG_Client_Controllers_$HexEditorController.$view = 'HexEditor';
 	})();
 	(function() {
 		$TurnRPG_Client_Utils_Constants.contentAddress = '';

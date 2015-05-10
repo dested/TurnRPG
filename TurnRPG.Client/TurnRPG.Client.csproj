@@ -32,9 +32,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="BuildAngular.cs" />
-    <Compile Include="Controllers\EnumerableExtensions.cs" />
-    <Compile Include="Controllers\LevelController.cs" />
+    <Compile Include="HexGame\DrawingUtilities.cs" />
+    <Compile Include="HexGame\GridHexagon.cs" />
+    <Compile Include="HexGame\GridHexagonConstants.cs" />
+    <Compile Include="HexGame\Hexagon.cs" />
+    <Compile Include="HexGame\HexBoard.cs" />
+    <Compile Include="Controllers\HexEditorController.cs" />
+    <Compile Include="Controllers\IController.cs" />
+    <Compile Include="Scope\Controller\HexEditorScope.cs" />
     <Compile Include="Scope\Controller\LevelScope.cs" />
+    <Compile Include="Utils\EnumerableExtensions.cs" />
+    <Compile Include="Controllers\LevelController.cs" />
     <Compile Include="Scope\Directive\Canvas\CanvasAssetFrameScope.cs" />
     <Compile Include="Utils\CanvasInformation.cs" />
     <Compile Include="Utils\Constants.cs" />
@@ -68,6 +76,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Partials\Areas\HexEditor.html" />
     <Content Include="Partials\Areas\Level.html" />
     <Content Include="Partials\Directives\fancyHorizontalList.html" />
     <Content Include="Partials\Directives\fancyHorizontalListIndex.html" />
@@ -95,6 +104,7 @@
       <HintPath>..\packages\Saltarelle.Web.3.1.0\lib\Saltarelle.Web.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="!Exists('$(SolutionDir)packages\Saltarelle.Compiler.2.6.2\tools\Saltarelle.Compiler.targets')" />
   <Import Project="$(SolutionDir)packages\Saltarelle.Compiler.2.6.2\tools\Saltarelle.Compiler.targets" Condition="Exists('$(SolutionDir)packages\Saltarelle.Compiler.2.6.2\tools\Saltarelle.Compiler.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

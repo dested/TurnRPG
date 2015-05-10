@@ -6,6 +6,8 @@ var uglify = require('gulp-uglify');
 var clean = require('gulp-clean');
 var insert = require('gulp-insert');
 var watch = require('gulp-watch');
+var livereload = require('gulp-livereload');
+
 
 var codePaths = ['TurnRPG.Client/bin/debug/**/*.js'];
 var uiPaths = ['TurnRPG.Client/Partials/Areas/**/*.*'];
@@ -14,16 +16,19 @@ var directivePaths = ['TurnRPG.Client/Partials/Directives/**/*.*'];
 
 gulp.task('client.packageScripts', function () {
     return gulp.src(codePaths)
-        .pipe(gulp.dest('output/js'));
+        .pipe(gulp.dest('output/js'))
+        .pipe(livereload({ reloadPage: true }));
 });
 
 
 
 gulp.task('client.packageViews', function () {
     return gulp.src(uiPaths)
-        .pipe(gulp.dest('output/partials/UIs'));
-}); 
+        .pipe(gulp.dest('output/partials/UIs'))
+        .pipe(livereload({reloadPage:true}));
+});
 gulp.task('client.watch', function () {
+    livereload.listen();
     gulp.watch(codePaths, ['client.packageScripts']);
     gulp.watch(uiPaths, ['client.packageViews']);
     gulp.watch(directivePaths, ['client.packageDirectives']);
@@ -31,7 +36,8 @@ gulp.task('client.watch', function () {
 });
 gulp.task('client.packageDirectives', function () {
     return gulp.src(directivePaths)
-        .pipe(gulp.dest('output/partials'));
+        .pipe(gulp.dest('output/partials'))
+        .pipe(livereload({ reloadPage: true }));
 });
 
 
@@ -43,7 +49,7 @@ gulp.task('client.express', function () {
     app.set('port', 3000);
     app.use(express.static('output'));
 
-     
+
 
     http.createServer(app).listen(app.get('port'), function () {
         console.log('Express server listening on port ' + app.get('port'));

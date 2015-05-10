@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace TurnRPG.Client.Controllers
+namespace TurnRPG.Client.Utils
 {
     public static class EnumerableExtensions
     {

@@ -24,8 +24,4 @@ namespace TurnRPG.Client.Scope.Controller
     {
     }
 }
-
-[Serializable]
-public class LevelModel
-{ 
-}
+ 
