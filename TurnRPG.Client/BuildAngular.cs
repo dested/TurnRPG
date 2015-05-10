@@ -30,6 +30,7 @@ namespace TurnRPG.Client
 
 
             var stats = new XStats();
+            stats.Element.Style.Position = "absolute";
             Document.Body.AppendChild(stats.Element);
 
 

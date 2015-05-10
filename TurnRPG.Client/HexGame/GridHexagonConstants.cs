@@ -12,16 +12,18 @@ namespace TurnRPG.Client.HexGame
             Width = 260;
             HeightSkew = .55;
             DepthHeightSkew = .40;
-/*
-            Width = 130;
-            HeightSkew = 1;
-            DepthHeightSkew = 0;*/
+            /*
+                        Width = 130;
+                        HeightSkew = 1;
+                        DepthHeightSkew = 0;*/
         }
 
         [IntrinsicProperty]
         public static double HeightSkew { get; set; }
+
         [IntrinsicProperty]
         public static double DepthHeightSkew { get; set; }
+
         [IntrinsicProperty]
         public static double Width { get; set; }
 
@@ -41,12 +43,12 @@ namespace TurnRPG.Client.HexGame
             {
                 return new[]
                 {
+                    new Point(-Width/2, 0),
+                    new Point(-Width/4, -Height/2),
                     new Point(Width/4, -Height/2),
                     new Point(Width/2, 0),
                     new Point(Width/4, Height/2),
                     new Point(-Width/4, Height/2),
-                    new Point(-Width/2, 0),
-                    new Point(-Width/4, -Height/2),
                 };
             }
         }
@@ -55,30 +57,32 @@ namespace TurnRPG.Client.HexGame
         {
             return new[]
             {
-                new Point(0, depthHeight),
-                new Point(Width/4, Height/2),
-                new Point(0, -depthHeight),
-                new Point(-Width/4, -Height/2),
+                new Point(-Width/2, 0),
+                new Point(-Width/4, Height/2),
+                new Point(-Width/4, Height/2 + depthHeight),
+                new Point(-Width/2, depthHeight),
             };
         }
+
         public static Point[] HexagonDepthBottomPolygon(double depthHeight)
         {
             return new[]
             {
-                new Point(0, depthHeight),
-                new Point(Width / 2, 0),
-                new Point(0, -depthHeight),
-                new Point(-Width / 2, 0),
+                new Point(-Width/4, Height/2),
+                new Point(Width/4, Height/2),
+                new Point(Width/4, Height/2 + depthHeight),
+                new Point(-Width/4, Height/2 + depthHeight),
             };
         }
+
         public static Point[] HexagonDepthRightPolygon(double depthHeight)
         {
             return new[]
             {
-                new Point(0, depthHeight),
-                new Point( Width / 4, -Height / 2),
-                new Point(0, -depthHeight),
-                new Point(-Width / 4, Height / 2),
+                new Point(Width/4, Height/2),
+                new Point(Width/2, 0),
+                new Point(Width/2, depthHeight),
+                new Point(Width/4, depthHeight + Height/2),
             };
         }
     }

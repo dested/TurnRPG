@@ -46,12 +46,9 @@ namespace TurnRPG.Client.HexGame
             context.Fill();
             context.Restore();
 
-/*
 
 
             context.Save();
-            context.Translate(GridHexagonConstants.Width / 4, GridHexagonConstants.Height / 2);
-
             DrawingUtilities.DrawShape(context, GridHexagonConstants.HexagonDepthBottomPolygon(myDepthHeight));
             context.FillStyle = DrawingUtilities.ColorLuminance(Hexagon.Color, -.4);
             context.StrokeStyle = DrawingUtilities.ColorLuminance(Hexagon.Color, -.4);
@@ -63,14 +60,12 @@ namespace TurnRPG.Client.HexGame
 
 
             context.Save();
-            context.Translate(GridHexagonConstants.Width * 3 / 4, GridHexagonConstants.Height / 2);
-
             DrawingUtilities.DrawShape(context, GridHexagonConstants.HexagonDepthRightPolygon(myDepthHeight));
             context.FillStyle = DrawingUtilities.ColorLuminance(Hexagon.Color, -.5);
             context.StrokeStyle = DrawingUtilities.ColorLuminance(Hexagon.Color, -.5);
             context.Stroke();
             context.Fill();
-            context.Restore();*/
+            context.Restore();
 
             context.Restore();
 
@@ -86,8 +81,14 @@ namespace TurnRPG.Client.HexGame
 
         public void Click()
         {
-            Hexagon.Enabled = false;
-            Hexagon.Color = Help.GetRandomColor();
+            if (Hexagon.Enabled)
+            {
+                Hexagon.Height += 0.5;
+            }
+            else
+            {
+                Hexagon.Enabled = true;
+            }
         }
     }
 }

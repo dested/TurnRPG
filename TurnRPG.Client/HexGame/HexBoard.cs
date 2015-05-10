@@ -18,21 +18,23 @@ namespace TurnRPG.Client.HexGame
             {
                 for (var x = 0; x < 10; x++)
                 {
-                    grid[y, x] = new Hexagon()
+                    var hex = new Hexagon()
                     {
                         Color = Help.GetRandomColor(),
                         Enabled = Math.Random() * 100 > 60,
                         Height = 0
                     };
-                    if (Math.Random() * 100 < 2)
+                    if (Math.Random() * 100 < 40)
                     {
-                        grid[y, x].Height = 1;
+                        hex.Height = 1;
                     }
-                    if (Math.Random() * 100 < 1)
+                    if (Math.Random() * 100 < 20)
                     {
-                        grid[y, x].Height = 2;
+                        hex.Height = 2;
                     }
-                    grid[y, x].Height = 0;
+                    if (!hex.Enabled) hex.Height = 0;
+//                    grid[y, x].Height = 0;
+                        grid[y, x] = hex;
                 }
             }
 
@@ -41,20 +43,70 @@ namespace TurnRPG.Client.HexGame
         }
 
         public void ClickBoard(int clickX, int clickY)
-        { 
-             
+        {
+            GridHexagon lastClick = null;
+            GridHexagon lastEmptyClick = null;
+
             foreach (var gridHexagon in HexList)
             {
                 var x = (GridHexagonConstants.Width * 3 / 4) * gridHexagon.X;
                 var y = gridHexagon.Y * GridHexagonConstants.Height + ((gridHexagon.X % 2 == 1) ? -GridHexagonConstants.Height / 2 : 0);
-                
-                y -=  gridHexagon.Hexagon.Height*GridHexagonConstants.DepthHeight;
+
+                y -= gridHexagon.Hexagon.Height * GridHexagonConstants.DepthHeight;
 
                 if (DrawingUtilities.PointInPolygon(clickX - x, clickY - y, GridHexagonConstants.HexagonTopPolygon))
                 {
-                    gridHexagon.Click();
-                    break;
+                    if (!gridHexagon.Hexagon.Enabled)
+                    {
+                        lastEmptyClick = gridHexagon;
+                    }
+                    else
+                    {
+                        lastClick = gridHexagon;
+                    }
                 }
+                if (DrawingUtilities.PointInPolygon(clickX - x, clickY - y, GridHexagonConstants.HexagonDepthLeftPolygon((gridHexagon.Hexagon.Height + 1) * GridHexagonConstants.DepthHeight)))
+                {
+                    if (!gridHexagon.Hexagon.Enabled)
+                    {
+                        lastEmptyClick = gridHexagon;
+                    }
+                    else
+                    {
+                        lastClick = gridHexagon;
+                    }
+                }
+                if (DrawingUtilities.PointInPolygon(clickX - x, clickY - y, GridHexagonConstants.HexagonDepthBottomPolygon((gridHexagon.Hexagon.Height + 1) * GridHexagonConstants.DepthHeight)))
+                {
+                    if (!gridHexagon.Hexagon.Enabled)
+                    {
+                        lastEmptyClick = gridHexagon;
+                    }
+                    else
+                    {
+                        lastClick = gridHexagon;
+                    }
+                }
+                if (DrawingUtilities.PointInPolygon(clickX - x, clickY - y, GridHexagonConstants.HexagonDepthRightPolygon((gridHexagon.Hexagon.Height + 1) * GridHexagonConstants.DepthHeight)))
+                {
+                    if (!gridHexagon.Hexagon.Enabled)
+                    {
+                        lastEmptyClick = gridHexagon;
+                    }
+                    else
+                    {
+                        lastClick = gridHexagon;
+                    }
+                }
+            }
+
+            if (lastClick != null)
+            {
+                lastClick.Click();
+            }
+            else if (lastEmptyClick != null)
+            {
+                lastEmptyClick.Click();
             }
         }
 

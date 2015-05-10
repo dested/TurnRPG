@@ -21,6 +21,7 @@
 	$TurnRPG_Client_BuildAngular.__typeName = 'TurnRPG.Client.BuildAngular';
 	$TurnRPG_Client_BuildAngular.setup = function() {
 		var stats = new xStats();
+		stats.element.style.position = 'absolute';
 		document.body.appendChild(stats.element);
 		var module = angular.module('TurnRPG', ['ui.utils', 'ui.bootstrap']).config(['$httpProvider', $TurnRPG_Client_BuildAngular.$buildHttpProvider]).controller($TurnRPG_Client_Controllers_$LevelController.$name, [$TurnRPG_Client_BuildAngular.$scopeName, function(scope) {
 			return new $TurnRPG_Client_Controllers_$LevelController(scope);
@@ -308,16 +309,16 @@
 		return $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() * $TurnRPG_Client_HexGame_GridHexagonConstants.depthHeightSkew;
 	};
 	$TurnRPG_Client_HexGame_GridHexagonConstants.get_hexagonTopPolygon = function() {
-		return [$TurnRPG_Client_Utils_Point.$ctor($TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, -$TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2), $TurnRPG_Client_Utils_Point.$ctor($TurnRPG_Client_HexGame_GridHexagonConstants.width / 2, 0), $TurnRPG_Client_Utils_Point.$ctor($TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2), $TurnRPG_Client_Utils_Point.$ctor(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2), $TurnRPG_Client_Utils_Point.$ctor(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 2, 0), $TurnRPG_Client_Utils_Point.$ctor(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, -$TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2)];
+		return [$TurnRPG_Client_Utils_Point.$ctor(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 2, 0), $TurnRPG_Client_Utils_Point.$ctor(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, -$TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2), $TurnRPG_Client_Utils_Point.$ctor($TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, -$TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2), $TurnRPG_Client_Utils_Point.$ctor($TurnRPG_Client_HexGame_GridHexagonConstants.width / 2, 0), $TurnRPG_Client_Utils_Point.$ctor($TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2), $TurnRPG_Client_Utils_Point.$ctor(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2)];
 	};
 	$TurnRPG_Client_HexGame_GridHexagonConstants.hexagonDepthLeftPolygon = function(depthHeight) {
-		return [$TurnRPG_Client_Utils_Point.$ctor(0, depthHeight), $TurnRPG_Client_Utils_Point.$ctor($TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2), $TurnRPG_Client_Utils_Point.$ctor(0, -depthHeight), $TurnRPG_Client_Utils_Point.$ctor(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, -$TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2)];
+		return [$TurnRPG_Client_Utils_Point.$ctor(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 2, 0), $TurnRPG_Client_Utils_Point.$ctor(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2), $TurnRPG_Client_Utils_Point.$ctor(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2 + depthHeight), $TurnRPG_Client_Utils_Point.$ctor(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 2, depthHeight)];
 	};
 	$TurnRPG_Client_HexGame_GridHexagonConstants.hexagonDepthBottomPolygon = function(depthHeight) {
-		return [$TurnRPG_Client_Utils_Point.$ctor(0, depthHeight), $TurnRPG_Client_Utils_Point.$ctor($TurnRPG_Client_HexGame_GridHexagonConstants.width / 2, 0), $TurnRPG_Client_Utils_Point.$ctor(0, -depthHeight), $TurnRPG_Client_Utils_Point.$ctor(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 2, 0)];
+		return [$TurnRPG_Client_Utils_Point.$ctor(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2), $TurnRPG_Client_Utils_Point.$ctor($TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2), $TurnRPG_Client_Utils_Point.$ctor($TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2 + depthHeight), $TurnRPG_Client_Utils_Point.$ctor(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2 + depthHeight)];
 	};
 	$TurnRPG_Client_HexGame_GridHexagonConstants.hexagonDepthRightPolygon = function(depthHeight) {
-		return [$TurnRPG_Client_Utils_Point.$ctor(0, depthHeight), $TurnRPG_Client_Utils_Point.$ctor($TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, -$TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2), $TurnRPG_Client_Utils_Point.$ctor(0, -depthHeight), $TurnRPG_Client_Utils_Point.$ctor(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2)];
+		return [$TurnRPG_Client_Utils_Point.$ctor($TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2), $TurnRPG_Client_Utils_Point.$ctor($TurnRPG_Client_HexGame_GridHexagonConstants.width / 2, 0), $TurnRPG_Client_Utils_Point.$ctor($TurnRPG_Client_HexGame_GridHexagonConstants.width / 2, depthHeight), $TurnRPG_Client_Utils_Point.$ctor($TurnRPG_Client_HexGame_GridHexagonConstants.width / 4, depthHeight + $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2)];
 	};
 	global.TurnRPG.Client.HexGame.GridHexagonConstants = $TurnRPG_Client_HexGame_GridHexagonConstants;
 	////////////////////////////////////////////////////////////////////////////////
@@ -1367,101 +1368,26 @@
 			context.save();
 			context.translate(0, -this.hexagon.height * $TurnRPG_Client_HexGame_GridHexagonConstants.get_depthHeight());
 			context.save();
-			context.translate(-$TurnRPG_Client_HexGame_GridHexagonConstants.width / 2, 0);
 			$TurnRPG_Client_HexGame_DrawingUtilities.drawShape(context, $TurnRPG_Client_HexGame_GridHexagonConstants.hexagonDepthLeftPolygon(myDepthHeight));
 			context.fillStyle = $TurnRPG_Client_HexGame_DrawingUtilities.colorLuminance(this.hexagon.color, -0.3);
 			context.strokeStyle = $TurnRPG_Client_HexGame_DrawingUtilities.colorLuminance(this.hexagon.color, -0.3);
 			context.stroke();
 			context.fill();
 			context.restore();
-			//
-			//
-			//
-			//            context.Save();
-			//
-			//
-			//
-			//            context.Translate(GridHexagonConstants.Width / 4, GridHexagonConstants.Height / 2);
-			//
-			//
-			//
-			//            
-			//
-			//
-			//
-			//            DrawingUtilities.DrawShape(context, GridHexagonConstants.HexagonDepthBottomPolygon(myDepthHeight));
-			//
-			//
-			//
-			//            context.FillStyle = DrawingUtilities.ColorLuminance(Hexagon.Color, -.4);
-			//
-			//
-			//
-			//            context.StrokeStyle = DrawingUtilities.ColorLuminance(Hexagon.Color, -.4);
-			//
-			//
-			//
-			//            context.Stroke();
-			//
-			//
-			//
-			//            context.Fill();
-			//
-			//
-			//
-			//            context.Restore();
-			//
-			//
-			//
-			//            
-			//
-			//
-			//
-			//            
-			//
-			//
-			//
-			//            
-			//
-			//
-			//
-			//            
-			//
-			//
-			//
-			//            context.Save();
-			//
-			//
-			//
-			//            context.Translate(GridHexagonConstants.Width * 3 / 4, GridHexagonConstants.Height / 2);
-			//
-			//
-			//
-			//            
-			//
-			//
-			//
-			//            DrawingUtilities.DrawShape(context, GridHexagonConstants.HexagonDepthRightPolygon(myDepthHeight));
-			//
-			//
-			//
-			//            context.FillStyle = DrawingUtilities.ColorLuminance(Hexagon.Color, -.5);
-			//
-			//
-			//
-			//            context.StrokeStyle = DrawingUtilities.ColorLuminance(Hexagon.Color, -.5);
-			//
-			//
-			//
-			//            context.Stroke();
-			//
-			//
-			//
-			//            context.Fill();
-			//
-			//
-			//
-			//            context.Restore();
+			context.save();
+			$TurnRPG_Client_HexGame_DrawingUtilities.drawShape(context, $TurnRPG_Client_HexGame_GridHexagonConstants.hexagonDepthBottomPolygon(myDepthHeight));
+			context.fillStyle = $TurnRPG_Client_HexGame_DrawingUtilities.colorLuminance(this.hexagon.color, -0.4);
+			context.strokeStyle = $TurnRPG_Client_HexGame_DrawingUtilities.colorLuminance(this.hexagon.color, -0.4);
+			context.stroke();
+			context.fill();
+			context.restore();
+			context.save();
+			$TurnRPG_Client_HexGame_DrawingUtilities.drawShape(context, $TurnRPG_Client_HexGame_GridHexagonConstants.hexagonDepthRightPolygon(myDepthHeight));
+			context.fillStyle = $TurnRPG_Client_HexGame_DrawingUtilities.colorLuminance(this.hexagon.color, -0.5);
+			context.strokeStyle = $TurnRPG_Client_HexGame_DrawingUtilities.colorLuminance(this.hexagon.color, -0.5);
+			context.stroke();
+			context.fill();
+			context.restore();
 			context.restore();
 		},
 		draw: function(context) {
@@ -1469,8 +1395,12 @@
 			this.drawHex(context);
 		},
 		click: function() {
-			this.hexagon.enabled = false;
-			this.hexagon.color = $TurnRPG_Client_Utils_Help.getRandomColor();
+			if (this.hexagon.enabled) {
+				this.hexagon.height += 0.5;
+			}
+			else {
+				this.hexagon.enabled = true;
+			}
 		}
 	});
 	ss.initClass($TurnRPG_Client_HexGame_GridHexagonConstants, $asm, {});
@@ -1480,33 +1410,72 @@
 			this.grid = ss.multidimArray(null, 10, 10);
 			for (var y = 0; y < 10; y++) {
 				for (var x = 0; x < 10; x++) {
-					var $t2 = this.grid;
 					var $t1 = new $TurnRPG_Client_HexGame_Hexagon();
 					$t1.color = $TurnRPG_Client_Utils_Help.getRandomColor();
 					$t1.enabled = Math.random() * 100 > 60;
 					$t1.height = 0;
-					ss.arraySet($t2, y, x, $t1);
-					if (Math.random() * 100 < 2) {
-						ss.arrayGet(this.grid, y, x).height = 1;
+					var hex = $t1;
+					if (Math.random() * 100 < 40) {
+						hex.height = 1;
 					}
-					if (Math.random() * 100 < 1) {
-						ss.arrayGet(this.grid, y, x).height = 2;
+					if (Math.random() * 100 < 20) {
+						hex.height = 2;
 					}
-					ss.arrayGet(this.grid, y, x).height = 0;
+					if (!hex.enabled) {
+						hex.height = 0;
+					}
+					//                    grid[y, x].Height = 0;
+					ss.arraySet(this.grid, y, x, hex);
 				}
 			}
 			this.$buildHexList();
 		},
 		clickBoard: function(clickX, clickY) {
+			var lastClick = null;
+			var lastEmptyClick = null;
 			for (var $t1 = 0; $t1 < this.hexList.length; $t1++) {
 				var gridHexagon = this.hexList[$t1];
 				var x = $TurnRPG_Client_HexGame_GridHexagonConstants.width * 3 / 4 * gridHexagon.x;
 				var y = gridHexagon.y * $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() + ((gridHexagon.x % 2 === 1) ? (-$TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2) : 0);
 				y -= gridHexagon.hexagon.height * $TurnRPG_Client_HexGame_GridHexagonConstants.get_depthHeight();
 				if ($TurnRPG_Client_HexGame_DrawingUtilities.pointInPolygon(clickX - x, clickY - y, $TurnRPG_Client_HexGame_GridHexagonConstants.get_hexagonTopPolygon())) {
-					gridHexagon.click();
-					break;
+					if (!gridHexagon.hexagon.enabled) {
+						lastEmptyClick = gridHexagon;
+					}
+					else {
+						lastClick = gridHexagon;
+					}
 				}
+				if ($TurnRPG_Client_HexGame_DrawingUtilities.pointInPolygon(clickX - x, clickY - y, $TurnRPG_Client_HexGame_GridHexagonConstants.hexagonDepthLeftPolygon((gridHexagon.hexagon.height + 1) * $TurnRPG_Client_HexGame_GridHexagonConstants.get_depthHeight()))) {
+					if (!gridHexagon.hexagon.enabled) {
+						lastEmptyClick = gridHexagon;
+					}
+					else {
+						lastClick = gridHexagon;
+					}
+				}
+				if ($TurnRPG_Client_HexGame_DrawingUtilities.pointInPolygon(clickX - x, clickY - y, $TurnRPG_Client_HexGame_GridHexagonConstants.hexagonDepthBottomPolygon((gridHexagon.hexagon.height + 1) * $TurnRPG_Client_HexGame_GridHexagonConstants.get_depthHeight()))) {
+					if (!gridHexagon.hexagon.enabled) {
+						lastEmptyClick = gridHexagon;
+					}
+					else {
+						lastClick = gridHexagon;
+					}
+				}
+				if ($TurnRPG_Client_HexGame_DrawingUtilities.pointInPolygon(clickX - x, clickY - y, $TurnRPG_Client_HexGame_GridHexagonConstants.hexagonDepthRightPolygon((gridHexagon.hexagon.height + 1) * $TurnRPG_Client_HexGame_GridHexagonConstants.get_depthHeight()))) {
+					if (!gridHexagon.hexagon.enabled) {
+						lastEmptyClick = gridHexagon;
+					}
+					else {
+						lastClick = gridHexagon;
+					}
+				}
+			}
+			if (ss.isValue(lastClick)) {
+				lastClick.click();
+			}
+			else if (ss.isValue(lastEmptyClick)) {
+				lastEmptyClick.click();
 			}
 		},
 		$buildHexList: function() {
@@ -1655,11 +1624,11 @@
 		$TurnRPG_Client_HexGame_GridHexagonConstants.heightSkew = 0.55;
 		$TurnRPG_Client_HexGame_GridHexagonConstants.depthHeightSkew = 0.4;
 		//
-		//            Width = 130;
+		//                        Width = 130;
 		//
-		//            HeightSkew = 1;
+		//                        HeightSkew = 1;
 		//
-		//            DepthHeightSkew = 0;
+		//                        DepthHeightSkew = 0;
 	})();
 	(function() {
 		$TurnRPG_Client_Controllers_$LevelController.$name = 'LevelController';
