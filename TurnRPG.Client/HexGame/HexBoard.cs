@@ -13,15 +13,16 @@ namespace TurnRPG.Client.HexGame
         public void Init()
         {
 
-            grid = new Hexagon[10, 10];
-            for (var y = 0; y < 10; y++)
+            grid = new Hexagon[40, 40];
+            for (var y = 0; y < 40; y++)
             {
-                for (var x = 0; x < 10; x++)
+                for (var x = 0; x < 40; x++)
                 {
+
                     var hex = new Hexagon()
                     {
-                        Color = Help.GetRandomColor(),
-                        Enabled = Math.Random() * 100 > 60,
+                        HexColor = new HexagonColor(Help.GetRandomColor()),
+                        Enabled = Math.Random() * 100 > 40,
                         Height = 0
                     };
                     if (Math.Random() * 100 < 40)
@@ -33,8 +34,7 @@ namespace TurnRPG.Client.HexGame
                         hex.Height = 2;
                     }
                     if (!hex.Enabled) hex.Height = 0;
-//                    grid[y, x].Height = 0;
-                        grid[y, x] = hex;
+                    grid[y, x] = hex;
                 }
             }
 

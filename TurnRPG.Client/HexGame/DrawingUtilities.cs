@@ -25,9 +25,7 @@ namespace TurnRPG.Client.HexGame
             context.BeginPath();
             foreach (var point in points)
             {
-                context.Translate((int)(point.X), (int)(point.Y));
-                context.LineTo(0, 0);
-                context.Translate((int)(-point.X), (int)(-point.Y));
+                context.LineTo((int)(point.X), (int)(point.Y));
             }
 
         }

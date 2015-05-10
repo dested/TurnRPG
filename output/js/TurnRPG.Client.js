@@ -257,9 +257,7 @@
 		try {
 			while ($t1.moveNext()) {
 				var point = $t1.current();
-				context.translate(ss.Int32.trunc(point.x), ss.Int32.trunc(point.y));
-				context.lineTo(0, 0);
-				context.translate(ss.Int32.trunc(-point.x), ss.Int32.trunc(-point.y));
+				context.lineTo(ss.Int32.trunc(point.x), ss.Int32.trunc(point.y));
 			}
 		}
 		finally {
@@ -324,12 +322,26 @@
 	////////////////////////////////////////////////////////////////////////////////
 	// TurnRPG.Client.HexGame.Hexagon
 	var $TurnRPG_Client_HexGame_Hexagon = function() {
-		this.color = null;
+		this.hexColor = null;
 		this.enabled = false;
 		this.height = 0;
 	};
 	$TurnRPG_Client_HexGame_Hexagon.__typeName = 'TurnRPG.Client.HexGame.Hexagon';
 	global.TurnRPG.Client.HexGame.Hexagon = $TurnRPG_Client_HexGame_Hexagon;
+	////////////////////////////////////////////////////////////////////////////////
+	// TurnRPG.Client.HexGame.HexagonColor
+	var $TurnRPG_Client_HexGame_HexagonColor = function(color) {
+		this.color = null;
+		this.dark1 = null;
+		this.dark2 = null;
+		this.dark3 = null;
+		this.color = color;
+		this.dark1 = $TurnRPG_Client_HexGame_DrawingUtilities.colorLuminance(color, -0.3);
+		this.dark2 = $TurnRPG_Client_HexGame_DrawingUtilities.colorLuminance(color, -0.4);
+		this.dark3 = $TurnRPG_Client_HexGame_DrawingUtilities.colorLuminance(color, -0.5);
+	};
+	$TurnRPG_Client_HexGame_HexagonColor.__typeName = 'TurnRPG.Client.HexGame.HexagonColor';
+	global.TurnRPG.Client.HexGame.HexagonColor = $TurnRPG_Client_HexGame_HexagonColor;
 	////////////////////////////////////////////////////////////////////////////////
 	// TurnRPG.Client.HexGame.HexBoard
 	var $TurnRPG_Client_HexGame_HexBoard = function() {
@@ -1354,8 +1366,8 @@
 			context.save();
 			context.translate(0, -this.hexagon.height * $TurnRPG_Client_HexGame_GridHexagonConstants.get_depthHeight());
 			$TurnRPG_Client_HexGame_DrawingUtilities.drawShape(context, $TurnRPG_Client_HexGame_GridHexagonConstants.get_hexagonTopPolygon());
-			context.fillStyle = this.hexagon.color;
-			context.strokeStyle = this.hexagon.color;
+			context.fillStyle = this.hexagon.hexColor.color;
+			context.strokeStyle = this.hexagon.hexColor.color;
 			context.stroke();
 			context.fill();
 			context.restore();
@@ -1367,27 +1379,21 @@
 			var myDepthHeight = (this.hexagon.height + 1) * $TurnRPG_Client_HexGame_GridHexagonConstants.get_depthHeight();
 			context.save();
 			context.translate(0, -this.hexagon.height * $TurnRPG_Client_HexGame_GridHexagonConstants.get_depthHeight());
-			context.save();
 			$TurnRPG_Client_HexGame_DrawingUtilities.drawShape(context, $TurnRPG_Client_HexGame_GridHexagonConstants.hexagonDepthLeftPolygon(myDepthHeight));
-			context.fillStyle = $TurnRPG_Client_HexGame_DrawingUtilities.colorLuminance(this.hexagon.color, -0.3);
-			context.strokeStyle = $TurnRPG_Client_HexGame_DrawingUtilities.colorLuminance(this.hexagon.color, -0.3);
+			context.fillStyle = this.hexagon.hexColor.dark1;
+			context.strokeStyle = this.hexagon.hexColor.dark1;
 			context.stroke();
 			context.fill();
-			context.restore();
-			context.save();
 			$TurnRPG_Client_HexGame_DrawingUtilities.drawShape(context, $TurnRPG_Client_HexGame_GridHexagonConstants.hexagonDepthBottomPolygon(myDepthHeight));
-			context.fillStyle = $TurnRPG_Client_HexGame_DrawingUtilities.colorLuminance(this.hexagon.color, -0.4);
-			context.strokeStyle = $TurnRPG_Client_HexGame_DrawingUtilities.colorLuminance(this.hexagon.color, -0.4);
+			context.fillStyle = this.hexagon.hexColor.dark2;
+			context.strokeStyle = this.hexagon.hexColor.dark2;
 			context.stroke();
 			context.fill();
-			context.restore();
-			context.save();
 			$TurnRPG_Client_HexGame_DrawingUtilities.drawShape(context, $TurnRPG_Client_HexGame_GridHexagonConstants.hexagonDepthRightPolygon(myDepthHeight));
-			context.fillStyle = $TurnRPG_Client_HexGame_DrawingUtilities.colorLuminance(this.hexagon.color, -0.5);
-			context.strokeStyle = $TurnRPG_Client_HexGame_DrawingUtilities.colorLuminance(this.hexagon.color, -0.5);
+			context.fillStyle = this.hexagon.hexColor.dark3;
+			context.strokeStyle = this.hexagon.hexColor.dark3;
 			context.stroke();
 			context.fill();
-			context.restore();
 			context.restore();
 		},
 		draw: function(context) {
@@ -1405,14 +1411,15 @@
 	});
 	ss.initClass($TurnRPG_Client_HexGame_GridHexagonConstants, $asm, {});
 	ss.initClass($TurnRPG_Client_HexGame_Hexagon, $asm, {});
+	ss.initClass($TurnRPG_Client_HexGame_HexagonColor, $asm, {});
 	ss.initClass($TurnRPG_Client_HexGame_HexBoard, $asm, {
 		init: function() {
-			this.grid = ss.multidimArray(null, 10, 10);
-			for (var y = 0; y < 10; y++) {
-				for (var x = 0; x < 10; x++) {
+			this.grid = ss.multidimArray(null, 40, 40);
+			for (var y = 0; y < 40; y++) {
+				for (var x = 0; x < 40; x++) {
 					var $t1 = new $TurnRPG_Client_HexGame_Hexagon();
-					$t1.color = $TurnRPG_Client_Utils_Help.getRandomColor();
-					$t1.enabled = Math.random() * 100 > 60;
+					$t1.hexColor = new $TurnRPG_Client_HexGame_HexagonColor($TurnRPG_Client_Utils_Help.getRandomColor());
+					$t1.enabled = Math.random() * 100 > 40;
 					$t1.height = 0;
 					var hex = $t1;
 					if (Math.random() * 100 < 40) {
@@ -1424,7 +1431,6 @@
 					if (!hex.enabled) {
 						hex.height = 0;
 					}
-					//                    grid[y, x].Height = 0;
 					ss.arraySet(this.grid, y, x, hex);
 				}
 			}
@@ -1620,7 +1626,7 @@
 		$TurnRPG_Client_HexGame_GridHexagonConstants.heightSkew = 0;
 		$TurnRPG_Client_HexGame_GridHexagonConstants.depthHeightSkew = 0;
 		$TurnRPG_Client_HexGame_GridHexagonConstants.width = 0;
-		$TurnRPG_Client_HexGame_GridHexagonConstants.width = 260;
+		$TurnRPG_Client_HexGame_GridHexagonConstants.width = 100;
 		$TurnRPG_Client_HexGame_GridHexagonConstants.heightSkew = 0.55;
 		$TurnRPG_Client_HexGame_GridHexagonConstants.depthHeightSkew = 0.4;
 		//
