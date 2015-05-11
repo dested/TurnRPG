@@ -244,19 +244,6 @@
 		context.lineWidth = 5;
 		context.stroke();
 	};
-	$TurnRPG_Client_HexGame_DrawingUtilities.drawShape = function(context, points) {
-		context.beginPath();
-		var $t1 = ss.getEnumerator(points);
-		try {
-			while ($t1.moveNext()) {
-				var point = $t1.current();
-				context.lineTo(ss.Int32.trunc(point.x), ss.Int32.trunc(point.y));
-			}
-		}
-		finally {
-			$t1.dispose();
-		}
-	};
 	$TurnRPG_Client_HexGame_DrawingUtilities.colorLuminance = function(hex, lum) {
 		// validate hex string
 		hex = hex.replace(new RegExp('[^0-9a-f]', 'gi'), '');
@@ -1054,6 +1041,7 @@
 		return $TurnRPG_Client_Utils_Pointer.$ctor(0, 0, ss.unbox(ss.cast((!!ev.wheelDelta ? (ev.wheelDelta / 40) : (!!ev.detail ? -ev.detail : 0)), ss.Int32)), !!ss.referenceEquals(ev.button, 2));
 	};
 	$TurnRPG_Client_Utils_Help.getRandomColor = function() {
+		return $TurnRPG_Client_Utils_Help.colors[0];
 		return $TurnRPG_Client_Utils_Help.colors[ss.Int32.trunc(Math.random() * $TurnRPG_Client_Utils_Help.colors.length)];
 	};
 	$TurnRPG_Client_Utils_Help.log = function(_cont) {
@@ -1366,18 +1354,6 @@
 	});
 	ss.initClass($TurnRPG_Client_HexGame_DrawingUtilities, $asm, {});
 	ss.initClass($TurnRPG_Client_HexGame_GridHexagon, $asm, {
-		draw: function(context) {
-			if (!this.hexagon.enabled) {
-				return;
-			}
-			context.save();
-			context.translate(0, -this.hexagon.get_height() * $TurnRPG_Client_HexGame_GridHexagonConstants.get_depthHeight());
-			this.hexagon.drawLeftDepth(context);
-			this.hexagon.drawBottomDepth(context);
-			this.hexagon.drawRightDepth(context);
-			this.hexagon.drawTop(context);
-			context.restore();
-		},
 		click: function() {
 			if (this.hexagon.enabled) {
 				this.hexagon.set_height(this.hexagon.get_height() + 0.5);
@@ -1404,50 +1380,62 @@
 			var $t1 = $TurnRPG_Client_HexGame_GridHexagonConstants.get_hexagonTopPolygon();
 			for (var $t2 = 0; $t2 < $t1.length; $t2++) {
 				var point = $t1[$t2];
-				this.$topPath.lineTo(ss.Int32.trunc(point.x), ss.Int32.trunc(point.y));
+				this.$topPath.lineTo(point.x, point.y);
 			}
 			this.$leftDepthPath = new Path2D();
 			var $t3 = $TurnRPG_Client_HexGame_GridHexagonConstants.hexagonDepthLeftPolygon(this.get_$depthHeight());
 			for (var $t4 = 0; $t4 < $t3.length; $t4++) {
 				var point1 = $t3[$t4];
-				this.$leftDepthPath.lineTo(ss.Int32.trunc(point1.x), ss.Int32.trunc(point1.y));
+				this.$leftDepthPath.lineTo(point1.x, point1.y);
 			}
 			this.$bottomDepthPath = new Path2D();
 			var $t5 = $TurnRPG_Client_HexGame_GridHexagonConstants.hexagonDepthBottomPolygon(this.get_$depthHeight());
 			for (var $t6 = 0; $t6 < $t5.length; $t6++) {
 				var point2 = $t5[$t6];
-				this.$bottomDepthPath.lineTo(ss.Int32.trunc(point2.x), ss.Int32.trunc(point2.y));
+				this.$bottomDepthPath.lineTo(point2.x, point2.y);
 			}
 			this.$rightDepthPath = new Path2D();
 			var $t7 = $TurnRPG_Client_HexGame_GridHexagonConstants.hexagonDepthRightPolygon(this.get_$depthHeight());
 			for (var $t8 = 0; $t8 < $t7.length; $t8++) {
 				var point3 = $t7[$t8];
-				this.$rightDepthPath.lineTo(ss.Int32.trunc(point3.x), ss.Int32.trunc(point3.y));
+				this.$rightDepthPath.lineTo(point3.x, point3.y);
 			}
 		},
 		drawLeftDepth: function(context) {
-			context.fillStyle = this.hexColor.dark1;
 			context.strokeStyle = this.hexColor.dark1;
 			context.stroke(this.$leftDepthPath);
+			context.fillStyle = this.hexColor.dark1;
 			context.fill(this.$leftDepthPath);
 		},
 		drawBottomDepth: function(context) {
-			context.fillStyle = this.hexColor.dark2;
 			context.strokeStyle = this.hexColor.dark2;
 			context.stroke(this.$bottomDepthPath);
+			context.fillStyle = this.hexColor.dark2;
 			context.fill(this.$bottomDepthPath);
 		},
 		drawRightDepth: function(context) {
-			context.fillStyle = this.hexColor.dark3;
 			context.strokeStyle = this.hexColor.dark3;
 			context.stroke(this.$rightDepthPath);
+			context.fillStyle = this.hexColor.dark3;
 			context.fill(this.$rightDepthPath);
 		},
 		drawTop: function(context) {
-			context.fillStyle = this.hexColor.color;
-			context.strokeStyle = this.hexColor.color;
+			context.setLineDash([9]);
+			context.strokeStyle = 'black';
 			context.stroke(this.$topPath);
-			context.fill(this.$topPath);
+			if (this.enabled) {
+				context.fillStyle = this.hexColor.color;
+				context.fill(this.$topPath);
+			}
+		},
+		draw: function(context) {
+			context.save();
+			context.translate(0, -this.get_height() * $TurnRPG_Client_HexGame_GridHexagonConstants.get_depthHeight());
+			this.drawLeftDepth(context);
+			this.drawBottomDepth(context);
+			this.drawRightDepth(context);
+			this.drawTop(context);
+			context.restore();
 		}
 	});
 	ss.initClass($TurnRPG_Client_HexGame_HexagonColor, $asm, {});
@@ -1458,14 +1446,14 @@
 				for (var x = 0; x < ss.arrayLength(this.grid, 1); x++) {
 					var $t1 = new $TurnRPG_Client_HexGame_Hexagon();
 					$t1.hexColor = new $TurnRPG_Client_HexGame_HexagonColor($TurnRPG_Client_Utils_Help.getRandomColor());
-					$t1.enabled = Math.random() * 100 > 40;
+					$t1.enabled = Math.random() * 100 > 200;
 					$t1.set_height(0);
 					var hex = $t1;
 					if (Math.random() * 100 < 40) {
-						hex.set_height(1);
+						hex.set_height(0);
 					}
 					if (Math.random() * 100 < 20) {
-						hex.set_height(2);
+						hex.set_height(1);
 					}
 					if (!hex.enabled) {
 						hex.set_height(0);
@@ -1531,9 +1519,7 @@
 		},
 		drawBoard: function(context) {
 			context.save();
-			context.lineWidth = 2;
-			context.lineJoin = 'round';
-			context.lineCap = 'round';
+			context.lineWidth = 1;
 			for (var $t1 = 0; $t1 < this.hexList.length; $t1++) {
 				var gridHexagon = this.hexList[$t1];
 				this.$drawHexagon(context, gridHexagon);
@@ -1544,8 +1530,8 @@
 			context.save();
 			var x = $TurnRPG_Client_HexGame_GridHexagonConstants.width * 3 / 4 * gridHexagon.x;
 			var y = gridHexagon.y * $TurnRPG_Client_HexGame_GridHexagonConstants.get_height() + ((gridHexagon.x % 2 === 1) ? (-$TurnRPG_Client_HexGame_GridHexagonConstants.get_height() / 2) : 0);
-			context.translate(ss.Int32.trunc(x), ss.Int32.trunc(y));
-			gridHexagon.draw(context);
+			context.translate(x, y);
+			gridHexagon.hexagon.draw(context);
 			context.restore();
 		}
 	});

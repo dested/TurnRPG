@@ -22,16 +22,16 @@ namespace TurnRPG.Client.HexGame
                     var hex = new Hexagon()
                     {
                         HexColor = new HexagonColor(Help.GetRandomColor()),
-                        Enabled = Math.Random() * 100 > 40,
+                        Enabled = Math.Random() * 100 > 200,
                         Height = 0
                     };
                     if (Math.Random() * 100 < 40)
                     {
-                        hex.Height = 1;
+                        hex.Height = 0;
                     }
                     if (Math.Random() * 100 < 20)
                     {
-                        hex.Height = 2;
+                        hex.Height = 1;
                     }
                     if (!hex.Enabled) hex.Height = 0;
                     grid[y, x] = hex;
@@ -126,9 +126,7 @@ namespace TurnRPG.Client.HexGame
             context.Save();
 
 
-            context.LineWidth = 2;
-            context.LineJoin = LineJoin.Round;
-            context.LineCap = LineCap.Round;
+            context.LineWidth = 1;
 
             foreach (var gridHexagon in HexList)
             {
@@ -145,8 +143,8 @@ namespace TurnRPG.Client.HexGame
             var x = (GridHexagonConstants.Width * 3 / 4) * gridHexagon.X;
             var y = gridHexagon.Y * GridHexagonConstants.Height + ((gridHexagon.X % 2 == 1) ? -GridHexagonConstants.Height / 2 : 0);
 
-            context.Translate((int)x, (int)y);
-            gridHexagon.Draw(context);
+            context.Translate(x, y);
+            gridHexagon.Hexagon.Draw(context);
 
 
             context.Restore();

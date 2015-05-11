@@ -42,6 +42,7 @@ namespace TurnRPG.Client.Utils
 
         public static string GetRandomColor()
         {
+            return colors[0];
             return colors[(int) ( Math.Random() * ( colors.Length ) )];
         }
 

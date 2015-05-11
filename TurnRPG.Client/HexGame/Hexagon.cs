@@ -40,66 +40,76 @@ namespace TurnRPG.Client.HexGame
             topPath = new Path2D();
             foreach (var point in GridHexagonConstants.HexagonTopPolygon)
             {
-                topPath.LineTo((int)(point.X), (int)(point.Y));
+                topPath.LineTo((point.X), (point.Y));
             }
 
             leftDepthPath = new Path2D();
             foreach (var point in GridHexagonConstants.HexagonDepthLeftPolygon(depthHeight))
             {
-                leftDepthPath.LineTo((int)(point.X), (int)(point.Y));
+                leftDepthPath.LineTo((point.X), (point.Y));
             }
 
             bottomDepthPath = new Path2D();
             foreach (var point in GridHexagonConstants.HexagonDepthBottomPolygon(depthHeight))
             {
-                bottomDepthPath.LineTo((int)(point.X), (int)(point.Y));
+                bottomDepthPath.LineTo((point.X), (point.Y));
             }
 
             rightDepthPath = new Path2D();
             foreach (var point in GridHexagonConstants.HexagonDepthRightPolygon(depthHeight))
             {
-                rightDepthPath.LineTo((int)(point.X), (int)(point.Y));
+                rightDepthPath.LineTo((point.X), (point.Y));
             }
-
         }
-
 
 
         public void DrawLeftDepth(CanvasRenderingContext2D context)
         {
-
-            context.FillStyle = HexColor.Dark1;
             context.StrokeStyle = HexColor.Dark1;
             context.Stroke(leftDepthPath);
+            context.FillStyle = HexColor.Dark1;
             context.Fill(leftDepthPath);
         }
         public void DrawBottomDepth(CanvasRenderingContext2D context)
         {
-
-            context.FillStyle = HexColor.Dark2;
             context.StrokeStyle = HexColor.Dark2;
             context.Stroke(bottomDepthPath);
+            context.FillStyle = HexColor.Dark2;
             context.Fill(bottomDepthPath);
         }
         public void DrawRightDepth(CanvasRenderingContext2D context)
         {
-
-            context.FillStyle = HexColor.Dark3;
             context.StrokeStyle = HexColor.Dark3;
             context.Stroke(rightDepthPath);
+            context.FillStyle = HexColor.Dark3;
             context.Fill(rightDepthPath);
         }
 
         public void DrawTop(CanvasRenderingContext2D context)
         {
-
-
-
-            context.FillStyle = HexColor.Color;
-            context.StrokeStyle = HexColor.Color;
+                context.SetLineDash(new double[] {9});
+            context.StrokeStyle = "black";
             context.Stroke(topPath);
-            context.Fill(topPath);
+            if (Enabled)
+            {
+                context.FillStyle = HexColor.Color;
+                context.Fill(topPath);
+            }
+        }
 
+        public void Draw(CanvasRenderingContext2D context)
+        {
+
+             
+
+            context.Save();
+            context.Translate(0, -(Height) * GridHexagonConstants.DepthHeight);
+                DrawLeftDepth(context);
+                DrawBottomDepth(context);
+                DrawRightDepth(context);
+            DrawTop(context);
+
+            context.Restore();
 
 
         }

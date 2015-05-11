@@ -8,22 +8,7 @@ namespace TurnRPG.Client.HexGame
         public int X;
         public int Y;
         public Hexagon Hexagon;
-         
-        public void Draw(CanvasRenderingContext2D context)
-        {
-            if (!Hexagon.Enabled) return;
-
-            context.Save();
-            context.Translate(0, -Hexagon.Height * GridHexagonConstants.DepthHeight);
-
-            Hexagon.DrawLeftDepth(context);
-            Hexagon.DrawBottomDepth(context);
-            Hexagon.DrawRightDepth(context);
-
-            Hexagon.DrawTop(context);
-            
-            context.Restore();
-        }
+     
 
         public void Click()
         {

@@ -19,18 +19,6 @@ namespace TurnRPG.Client.HexGame
         }
 
 
-        public static void DrawShape(CanvasRenderingContext2D context, IEnumerable<Point> points)
-        {
-
-            context.BeginPath();
-            foreach (var point in points)
-            {
-                context.LineTo((int)(point.X), (int)(point.Y));
-            }
-
-        }
-
-
         public static string ColorLuminance(string hex, double lum)
         {
 
