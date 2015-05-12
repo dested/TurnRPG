@@ -7,6 +7,7 @@ namespace TurnRPG.Client.HexGame
     {
         public int X;
         public int Y;
+        public int Z;
         public Hexagon Hexagon;
      
 

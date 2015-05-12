@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Html.Media.Graphics;
 using TurnRPG.Client.Utils;
 
@@ -7,132 +8,122 @@ namespace TurnRPG.Client.HexGame
 {
     public class HexBoard
     {
-        public GridHexagon[] HexList;
-        public Hexagon[,] grid;
+        public List<GridHexagon> HexList=new List<GridHexagon>();
 
         public void Init()
         {
-
-            grid = new Hexagon[20, 20];
-            for (var y = 0; y < grid.GetLength(0); y++)
-            {
-                for (var x = 0; x < grid.GetLength(1); x++)
-                {
-
-                    var hex = new Hexagon()
-                    {
-                        HexColor = new HexagonColor(Help.GetRandomColor()),
-                        Enabled = Math.Random() * 100 > 200,
-                        Height = 0
-                    };
-                    if (Math.Random() * 100 < 40)
-                    {
-                        hex.Height = 0;
-                    }
-                    if (Math.Random() * 100 < 20)
-                    {
-                        hex.Height = 1;
-                    }
-                    if (!hex.Enabled) hex.Height = 0;
-                    grid[y, x] = hex;
-                }
-            }
-
-
-            BuildHexList();
         }
 
+        public Point xyToHex(int clickX, int clickY)
+        {
+            var size = GridHexagonConstants.Width/2;
+
+            var q = clickX * 2.0 / 3.0 / size;
+            var r = (-clickX / 3.0 + Math.Sqrt(3.0) / 3.0 * (clickY / GridHexagonConstants.HeightSkew)) / (size);
+
+            var x = q;
+            var y = -q - r;
+            var z = r;
+
+            var rx = Math.Round(x);
+            var ry = Math.Round(y);
+            var rz = Math.Round(z);
+
+
+            var x_diff = Math.Abs(rx - x);
+            var y_diff = Math.Abs(ry - y);
+            var z_diff = Math.Abs(rz - z);
+
+
+            if (x_diff > y_diff && x_diff > z_diff)
+                rx = -ry - rz;
+            else
+                if (y_diff > z_diff)
+                    ry = -rx - rz;
+                else
+                    rz = -rx - ry;
+
+            x = rx;
+            y = rz + (rx + (rx % 2))/2;
+
+            return new Point(x,y);
+        }
         public void ClickBoard(int clickX, int clickY)
         {
             GridHexagon lastClick = null;
-            GridHexagon lastEmptyClick = null;
+
+            var ff = xyToHex(clickX, clickY);
 
             foreach (var gridHexagon in HexList)
             {
                 var x = (GridHexagonConstants.Width * 3 / 4) * gridHexagon.X;
-                var y = gridHexagon.Y * GridHexagonConstants.Height + ((gridHexagon.X % 2 == 1) ? -GridHexagonConstants.Height / 2 : 0);
+                var z = gridHexagon.Z * GridHexagonConstants.Height + ((gridHexagon.X % 2 == 1) ? -GridHexagonConstants.Height / 2 : 0);
 
-                y -= gridHexagon.Hexagon.Height * GridHexagonConstants.DepthHeight;
+                z -= gridHexagon.Hexagon.Height * GridHexagonConstants.DepthHeight;
 
-                if (DrawingUtilities.PointInPolygon(clickX - x, clickY - y, GridHexagonConstants.HexagonTopPolygon))
+                z += gridHexagon.Y*GridHexagonConstants.DepthHeight;
+
+                if (DrawingUtilities.PointInPolygon(clickX - x, clickY - z, GridHexagonConstants.HexagonTopPolygon))
                 {
-                    if (!gridHexagon.Hexagon.Enabled)
-                    {
-                        lastEmptyClick = gridHexagon;
-                    }
-                    else
-                    {
-                        lastClick = gridHexagon;
-                    }
+                    lastClick = gridHexagon;
                 }
-                if (DrawingUtilities.PointInPolygon(clickX - x, clickY - y, GridHexagonConstants.HexagonDepthLeftPolygon((gridHexagon.Hexagon.Height + 1) * GridHexagonConstants.DepthHeight)))
+                if (DrawingUtilities.PointInPolygon(clickX - x, clickY - z, GridHexagonConstants.HexagonDepthLeftPolygon((gridHexagon.Hexagon.Height + 1) * GridHexagonConstants.DepthHeight)))
                 {
-                    if (!gridHexagon.Hexagon.Enabled)
-                    {
-                        lastEmptyClick = gridHexagon;
-                    }
-                    else
-                    {
-                        lastClick = gridHexagon;
-                    }
+                    lastClick = gridHexagon;
                 }
-                if (DrawingUtilities.PointInPolygon(clickX - x, clickY - y, GridHexagonConstants.HexagonDepthBottomPolygon((gridHexagon.Hexagon.Height + 1) * GridHexagonConstants.DepthHeight)))
+                if (DrawingUtilities.PointInPolygon(clickX - x, clickY - z, GridHexagonConstants.HexagonDepthBottomPolygon((gridHexagon.Hexagon.Height + 1) * GridHexagonConstants.DepthHeight)))
                 {
-                    if (!gridHexagon.Hexagon.Enabled)
-                    {
-                        lastEmptyClick = gridHexagon;
-                    }
-                    else
-                    {
-                        lastClick = gridHexagon;
-                    }
+                    lastClick = gridHexagon;
                 }
-                if (DrawingUtilities.PointInPolygon(clickX - x, clickY - y, GridHexagonConstants.HexagonDepthRightPolygon((gridHexagon.Hexagon.Height + 1) * GridHexagonConstants.DepthHeight)))
+                if (DrawingUtilities.PointInPolygon(clickX - x, clickY - z, GridHexagonConstants.HexagonDepthRightPolygon((gridHexagon.Hexagon.Height + 1) * GridHexagonConstants.DepthHeight)))
                 {
-                    if (!gridHexagon.Hexagon.Enabled)
-                    {
-                        lastEmptyClick = gridHexagon;
-                    }
-                    else
-                    {
-                        lastClick = gridHexagon;
-                    }
+                    lastClick = gridHexagon;
                 }
             }
 
             if (lastClick != null)
             {
                 lastClick.Click();
+                ReorderHexList();
             }
-            else if (lastEmptyClick != null)
+            else
             {
-                lastEmptyClick.Click();
+                AddHexagon(new GridHexagon()
+                {
+                    X=(int) ff.X,
+                    Y = 0,
+                    Z=(int) ff.Y,
+                    Hexagon = new Hexagon()
+                    {
+                        HexColor = new HexagonColor("#FF0000"),
+                        Enabled = true,
+                        Height = 0
+                    }
+                });
             }
         }
 
-
-        private void BuildHexList()
+        private void AddHexagon(GridHexagon hexagon)
         {
+            HexList.Add(hexagon);
+            ReorderHexList();
+        }
 
-            var gridHexagons = gridToGridHexagons(grid);
 
-            HexList = gridHexagons.OrderBy(m => m.Y * 1000 + (m.X % 2) * -200 + m.Hexagon.Height);
-
+        private void ReorderHexList()
+        {
+            HexList = HexList.OrderBy(m => (m.Z-m.Y) * 1000 + (m.X % 2) * -200 + m.Hexagon.Height);
         }
 
 
         public void DrawBoard(CanvasRenderingContext2D context)
         {
             context.Save();
-
-
             context.LineWidth = 1;
-
             foreach (var gridHexagon in HexList)
             {
                 drawHexagon(context, gridHexagon);
             }
-
             context.Restore();
         }
 
@@ -141,31 +132,19 @@ namespace TurnRPG.Client.HexGame
             context.Save();
 
             var x = (GridHexagonConstants.Width * 3 / 4) * gridHexagon.X;
-            var y = gridHexagon.Y * GridHexagonConstants.Height + ((gridHexagon.X % 2 == 1) ? -GridHexagonConstants.Height / 2 : 0);
+            var z = gridHexagon.Z * GridHexagonConstants.Height + ((gridHexagon.X % 2 == 1) ? -GridHexagonConstants.Height / 2 : 0);
 
-            context.Translate(x, y);
+            z += -(gridHexagon.Hexagon.Height)*GridHexagonConstants.DepthHeight;
+
+            z += gridHexagon.Y*GridHexagonConstants.DepthHeight;
+
+            context.Translate(x, z);
             gridHexagon.Hexagon.Draw(context);
 
 
             context.Restore();
         }
 
-
-
-        private static List<GridHexagon> gridToGridHexagons(Hexagon[,] hexagons)
-        {
-            List<GridHexagon> gridHexagons = new List<GridHexagon>();
-
-            for (var y = 0; y < hexagons.GetLength(0); y++)
-            {
-                for (var x = 0; x < hexagons.GetLength(1); x++)
-                {
-                    gridHexagons.Add(new GridHexagon() { X = x, Y = y, Hexagon = hexagons[y, x] });
-                }
-            }
-
-            return gridHexagons;
-        }
 
 
 

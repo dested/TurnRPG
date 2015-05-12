@@ -87,30 +87,29 @@ namespace TurnRPG.Client.HexGame
 
         public void DrawTop(CanvasRenderingContext2D context)
         {
-                context.SetLineDash(new double[] {9});
-            context.StrokeStyle = "black";
-            context.Stroke(topPath);
-            if (Enabled)
-            {
+//            context.SetLineDash(new double[] { 9 });
+       
+                context.StrokeStyle = "black";
+                context.Stroke(topPath);
                 context.FillStyle = HexColor.Color;
                 context.Fill(topPath);
-            }
+           
         }
 
         public void Draw(CanvasRenderingContext2D context)
         {
 
-             
+            if (Enabled)
+            {
 
-            context.Save();
-            context.Translate(0, -(Height) * GridHexagonConstants.DepthHeight);
+                context.Save(); 
                 DrawLeftDepth(context);
                 DrawBottomDepth(context);
                 DrawRightDepth(context);
-            DrawTop(context);
+                DrawTop(context);
 
-            context.Restore();
-
+                context.Restore();
+            }
 
         }
     }
@@ -124,9 +123,9 @@ namespace TurnRPG.Client.HexGame
         public HexagonColor(string color)
         {
             Color = color;
-            Dark1 = DrawingUtilities.ColorLuminance(color, -.3);
+            Dark1 = DrawingUtilities.ColorLuminance(color, -.2);
             Dark2 = DrawingUtilities.ColorLuminance(color, -.4);
-            Dark3 = DrawingUtilities.ColorLuminance(color, -.5);
+            Dark3 = DrawingUtilities.ColorLuminance(color, -.6);
 
 
         }

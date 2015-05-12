@@ -137,11 +137,11 @@ namespace TurnRPG.Client.Utils
             j.Sort((a, b) => clause(a).CompareTo(clause(b)));
             return j;
         }
-        public static T[] OrderBy<T>(this IEnumerable<T> items, Func<T, double> clause)
+        public static List<T> OrderBy<T>(this IEnumerable<T> items, Func<T, double> clause)
         {
             var j = items.ToArray().Clone();
             j.Sort((a, b) => clause(a).CompareTo(clause(b)));
-            return j;
+            return new List<T>(j);
         }
         public static T[] ToArray<T>(this IEnumerable<T> items)
         {
@@ -236,7 +236,7 @@ namespace TurnRPG.Client.Utils
             return ritems;
         }
 
-         
+
 
         public static List<T2> SelectMany<T, T2>(this List<T> items, Func<T, List<T2>> clause)
         {
@@ -272,7 +272,7 @@ namespace TurnRPG.Client.Utils
             }
             return default(T);
         }
-         
+
     }
     public class GroupByItem<T, T2> : IEnumerable<T>
     {

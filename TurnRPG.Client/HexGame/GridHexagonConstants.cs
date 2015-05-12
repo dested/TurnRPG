@@ -49,6 +49,7 @@ namespace TurnRPG.Client.HexGame
                     new Point(Width/2, 0),
                     new Point(Width/4, Height/2),
                     new Point(-Width/4, Height/2),
+                    new Point(-Width/2, 0),
                 };
             }
         }
@@ -61,6 +62,7 @@ namespace TurnRPG.Client.HexGame
                 new Point(-Width/4, Height/2),
                 new Point(-Width/4, Height/2 + depthHeight),
                 new Point(-Width/2, depthHeight),
+                new Point(-Width/2, 0),
             };
         }
 
@@ -72,6 +74,7 @@ namespace TurnRPG.Client.HexGame
                 new Point(Width/4, Height/2),
                 new Point(Width/4, Height/2 + depthHeight),
                 new Point(-Width/4, Height/2 + depthHeight),
+                new Point(-Width/4, Height/2),
             };
         }
 
@@ -83,6 +86,7 @@ namespace TurnRPG.Client.HexGame
                 new Point(Width/2, 0),
                 new Point(Width/2, depthHeight),
                 new Point(Width/4, depthHeight + Height/2),
+                new Point(Width/4, Height/2),
             };
         }
     }
